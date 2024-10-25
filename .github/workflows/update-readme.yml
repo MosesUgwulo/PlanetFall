@@ -13,11 +13,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Debug Environment Variables
+        run: |
+          echo "TRELLO_API_KEY=${{ secrets.TRELLO_API_KEY }}"
+          echo "TRELLO_TOKEN=${{ secrets.TRELLO_TOKEN }}"
+
       - name: Fetch Trello Data
         env:
           TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
           TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
         run: |
+          set -x
           curl -s "https://api.trello.com/1/boards/5eWdHEpl/cards?key=$TRELLO_API_KEY&token=$TRELLO_TOKEN" > trello_data.json
 
       - name: Update README
