@@ -24,7 +24,7 @@ jobs:
           TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
         run: |
           set -x
-          curl -s "https://api.trello.com/1/boards/5eWdHEpl/cards?key=$TRELLO_API_KEY&token=$TRELLO_TOKEN" > trello_data.json
+          curl -s "https://api.trello.com/1/boards/5eWdHEpl/cards?key=ec3bbe82d3b36ae9ccf60b003cf9c1b1&token=221bdb2d49028bc48593dd797aed054c7e5b4bfc4d3cff49004bdd96787bd7fb" > trello_data.json
 
       - name: Update README
         run: |
