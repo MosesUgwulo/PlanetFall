@@ -23,6 +23,10 @@ jobs:
       - name: Update README
         run: |
           python update_readme.py
+      
+      - name: Clean up trello_data.json
+        run: |
+          rm trello_data.json
 
       - name: Commit changes
         run: |
