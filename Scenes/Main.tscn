@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://hbkgpxdwnsyy"]
+
+[ext_resource type="Texture2D" uid="uid://dfbgthh5qfnt8" path="res://Assets/panorama_image.png" id="1_oq22l"]
+[ext_resource type="PackedScene" uid="uid://cfko1j3mivho4" path="res://Scenes/Planet.tscn" id="2_stmvw"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_oaidj"]
+panorama = ExtResource("1_oq22l")
+
+[sub_resource type="Sky" id="Sky_n1864"]
+sky_material = SubResource("PanoramaSkyMaterial_oaidj")
+
+[sub_resource type="Environment" id="Environment_phdfk"]
+background_mode = 2
+sky = SubResource("Sky_n1864")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Root" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_phdfk")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.93456)
+current = true
+
+[node name="Planet" parent="." instance=ExtResource("2_stmvw")]
