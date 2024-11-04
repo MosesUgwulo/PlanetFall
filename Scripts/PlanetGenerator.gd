@@ -1,18 +1,25 @@
+@tool
 extends MeshInstance3D
 
 var triangles = []
 var vertices = []
 
-@export var noise : FastNoiseLite
-@export var radius : float = 1.0
+@export var noise : FastNoiseLite = null : set = set_noise
+
+@export var radius : float = 1.0 : set = set_radius
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	generate_planet()
+
+func generate_planet():
 	generate_icosphere()
 	generate_mesh()
 
 # Generate an icosphere
 func generate_icosphere():
+	vertices.clear()
+	triangles.clear()
 
 	var t = (1.0 + sqrt(5.0)) / 2.0
 
@@ -73,7 +80,16 @@ func generate_mesh():
 
 	var t = MeshDataTool.new()
 	t.create_from_surface(surface_tool.commit(), 0)
-	self.mesh = surface_tool.commit()		
+	self.mesh = surface_tool.commit()
+
+func set_noise(value):
+	noise = value
+	generate_planet()
+	
+
+func set_radius(value):
+	radius = value
+	generate_planet()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):

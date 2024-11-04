@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://hbkgpxdwnsyy"]
+[gd_scene load_steps=7 format=4 uid="uid://hbkgpxdwnsyy"]
 
 [ext_resource type="Texture2D" uid="uid://dfbgthh5qfnt8" path="res://Assets/panorama_image.png" id="1_oq22l"]
 [ext_resource type="PackedScene" uid="uid://cfko1j3mivho4" path="res://Scenes/Planet.tscn" id="2_stmvw"]
@@ -15,13 +15,25 @@ sky = SubResource("Sky_n1864")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="ArrayMesh" id="ArrayMesh_hp2mw"]
+_surfaces = [{
+"aabb": AABB(-1.73107, -1.73107, -1.73107, 3.46215, 3.46215, 3.46215),
+"format": 34359742471,
+"index_count": 60,
+"index_data": PackedByteArray("AAABAAIAAwAAAAIABAADAAIABQAEAAIAAQAFAAIABgAAAAMABwABAAAACAAFAAEACQAEAAUACgADAAQABwAGAAsACAAHAAsACQAIAAsACgAJAAsABgAKAAsAAAAGAAcAAQAHAAgABQAIAAkABAAJAAoAAwAKAAYA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 12,
+"vertex_data": PackedByteArray("AAAAAETxiD/Zk90/2ZPdvwAAAABE8Yg/RPGIv9mT3T8AAAAARPGIP9mT3T8AAAAAAAAAAETxiD/Zk92/2ZPdvwAAAABE8Yi/2ZPdPwAAAABE8Yg/AAAAAETxiL/Zk90/RPGIv9mT3b8AAAAAAAAAAETxiL/Zk92/2ZPdPwAAAABE8Yi/RPGIP9mT3b8AAAAA/3/jsI1n/5/kMP9/jafGsxtPGs//Pzis47Aaz/8/xtPkMP///z84jAAAG09xWMazGs//f3FYxrP/fxtP/z84jBtP5DD/P8bTGs8AAI1n/5///+OwjafGs+Ow5DD/Pzis")
+}]
+
 [node name="Root" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_phdfk")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 2.93107, 1.90601, 0)
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
@@ -29,3 +41,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.93456)
 current = true
 
 [node name="Planet" parent="." instance=ExtResource("2_stmvw")]
+mesh = SubResource("ArrayMesh_hp2mw")
+radius = 2.035
