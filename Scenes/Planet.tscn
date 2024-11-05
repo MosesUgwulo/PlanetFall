@@ -1,6 +1,33 @@
-[gd_scene load_steps=2 format=3 uid="uid://cfko1j3mivho4"]
+[gd_scene load_steps=7 format=4 uid="uid://cfko1j3mivho4"]
 
-[ext_resource type="Script" path="res://Scripts/PlanetGenerator.gd" id="1_1ljah"]
+[ext_resource type="Script" path="res://Scripts/Planet.gd" id="1_rnhuu"]
+[ext_resource type="Script" path="res://Scripts/PlanetData.gd" id="2_of0n3"]
+[ext_resource type="Script" path="res://Scripts/PlanetMesh.gd" id="3_vo7hh"]
 
-[node name="Planet" type="MeshInstance3D"]
-script = ExtResource("1_1ljah")
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xr70u"]
+
+[sub_resource type="Resource" id="Resource_3gejs"]
+script = ExtResource("2_of0n3")
+noise = SubResource("FastNoiseLite_xr70u")
+radius = 5.0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_fp7ti"]
+_surfaces = [{
+"aabb": AABB(-2.1266, -2.12845, -2.12334, 4.25766, 4.25601, 4.25381),
+"format": 34359742471,
+"index_count": 60,
+"index_data": PackedByteArray("AAABAAIAAwAAAAIABAADAAIABQAEAAIAAQAFAAIABgAAAAMABwABAAAACAAFAAEACQAEAAUACgADAAQABwAGAAsACAAHAAsACQAIAAsACgAJAAsABgAKAAsAAAAGAAcAAQAHAAgABQAIAAkABAAJAAoAAwAKAAYA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 12,
+"vertex_data": PackedByteArray("AAAAAHh+qD+FUAhAQBoIwAAAAABkO6g//haov838B0AAAAAAvU6oP+cpCEAAAAAAAAAAACnupz/F2wfAGNIHwAAAAAA04qe/OWMIQAAAAACWlag/AAAAAKGJqL+MWQhADimov2oLCMAAAAAAAAAAAFP5p7/M5AfAERsIQAAAAABmPKi/zWCoP4Q4CMAAAAAA53/rsIxnBKDGMASAfafWs/ZOHM/5PzOs6rA6z+E/ytPPMOf/DUA5jAQA9bBsWLyzJs8EgHdYz7PnfxhP8j84jPNO5jAdQMHTyTAXAI5n+p/6/wexnKe2s+6wyDAFQDys")
+}]
+
+[node name="Planet" type="Node3D" node_paths=PackedStringArray("planet_mesh")]
+script = ExtResource("1_rnhuu")
+planet_data = SubResource("Resource_3gejs")
+planet_mesh = NodePath("PlanetMesh")
+
+[node name="PlanetMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("ArrayMesh_fp7ti")
+script = ExtResource("3_vo7hh")

@@ -1,20 +1,14 @@
 @tool
 extends MeshInstance3D
+class_name PlanetMesh
 
 var triangles = []
 var vertices = []
 
-@export var noise : FastNoiseLite = null : set = set_noise
 
-@export var radius : float = 1.0 : set = set_radius
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	generate_planet()
-
-func generate_planet():
+func generate_planet(planet_data : PlanetData):
 	generate_icosphere()
-	generate_mesh()
+	generate_mesh(planet_data)
 
 # Generate an icosphere
 func generate_icosphere():
@@ -60,7 +54,7 @@ func generate_icosphere():
 	triangles.push_back(Triangle.new(9, 8, 1))
 
 # Generate a mesh from the vertices and triangles
-func generate_mesh():
+func generate_mesh(planet_data : PlanetData):
 
 	var surface_tool = SurfaceTool.new()
 	surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -70,10 +64,10 @@ func generate_mesh():
 
 		for j in triangle.vertices.size():
 			var vertex = vertices[triangle.vertices[(triangle.vertices.size() - 1) - j]]
-			if noise != null:
-				vertex = vertex.normalized() * ((noise.get_noise_3dv(vertex * noise.period * noise.octaves) + 1) * 0.5)
+			if planet_data.noise != null:
+				vertex = vertex.normalized() * ((planet_data.noise.get_noise_3dv(vertex * planet_data.noise.frequency * planet_data.noise.fractal_octaves) + 1) * 0.5)
 
-			surface_tool.add_vertex(vertex * radius)
+			surface_tool.add_vertex(vertex * planet_data.radius)
 
 	surface_tool.index()
 	surface_tool.generate_normals()
@@ -82,18 +76,6 @@ func generate_mesh():
 	t.create_from_surface(surface_tool.commit(), 0)
 	self.mesh = surface_tool.commit()
 
-func set_noise(value):
-	noise = value
-	generate_planet()
-	
-
-func set_radius(value):
-	radius = value
-	generate_planet()
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	pass
 
 class Triangle:
 	var vertices = []

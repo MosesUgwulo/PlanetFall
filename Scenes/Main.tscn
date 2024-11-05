@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=4 uid="uid://hbkgpxdwnsyy"]
+[gd_scene load_steps=9 format=3 uid="uid://hbkgpxdwnsyy"]
 
 [ext_resource type="Texture2D" uid="uid://dfbgthh5qfnt8" path="res://Assets/panorama_image.png" id="1_oq22l"]
 [ext_resource type="PackedScene" uid="uid://cfko1j3mivho4" path="res://Scenes/Planet.tscn" id="2_stmvw"]
+[ext_resource type="Script" path="res://Scripts/PlanetData.gd" id="3_njhf0"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_oaidj"]
 panorama = ExtResource("1_oq22l")
@@ -15,17 +16,12 @@ sky = SubResource("Sky_n1864")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_hp2mw"]
-_surfaces = [{
-"aabb": AABB(-1.73107, -1.73107, -1.73107, 3.46215, 3.46215, 3.46215),
-"format": 34359742471,
-"index_count": 60,
-"index_data": PackedByteArray("AAABAAIAAwAAAAIABAADAAIABQAEAAIAAQAFAAIABgAAAAMABwABAAAACAAFAAEACQAEAAUACgADAAQABwAGAAsACAAHAAsACQAIAAsACgAJAAsABgAKAAsAAAAGAAcAAQAHAAgABQAIAAkABAAJAAoAAwAKAAYA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 12,
-"vertex_data": PackedByteArray("AAAAAETxiD/Zk90/2ZPdvwAAAABE8Yg/RPGIv9mT3T8AAAAARPGIP9mT3T8AAAAAAAAAAETxiD/Zk92/2ZPdvwAAAABE8Yi/2ZPdPwAAAABE8Yg/AAAAAETxiL/Zk90/RPGIv9mT3b8AAAAAAAAAAETxiL/Zk92/2ZPdPwAAAABE8Yi/RPGIP9mT3b8AAAAA/3/jsI1n/5/kMP9/jafGsxtPGs//Pzis47Aaz/8/xtPkMP///z84jAAAG09xWMazGs//f3FYxrP/fxtP/z84jBtP5DD/P8bTGs8AAI1n/5///+OwjafGs+Ow5DD/Pzis")
-}]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_8q5ch"]
+
+[sub_resource type="Resource" id="Resource_v42it"]
+script = ExtResource("3_njhf0")
+noise = SubResource("FastNoiseLite_8q5ch")
+radius = 15.0
 
 [node name="Root" type="Node3D"]
 
@@ -41,5 +37,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.93456)
 current = true
 
 [node name="Planet" parent="." instance=ExtResource("2_stmvw")]
-mesh = SubResource("ArrayMesh_hp2mw")
-radius = 2.035
+planet_data = SubResource("Resource_v42it")
