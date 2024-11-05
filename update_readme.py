@@ -10,28 +10,26 @@ def update_readme():
         list_name = card.get('list_name', 'Uncategorized')
         if list_name not in lists:
             lists[list_name] = []
-        lists[list_name].append(card)
+        lists[list_name].append(card['name'])
 
-    # Build the README content with tables
+    # Get all list names and the maximum number of cards in any list to structure the table
+    list_names = list(lists.keys())
+    max_cards = max(len(cards) for cards in lists.values())
+
+    # Build the README content with a single table
     readme_content = "# Trello Board Updates\n\n"
-    for list_name, cards in lists.items():
-        readme_content += f"## {list_name}\n\n"
-        
-        # Create table header
-        readme_content += "| Card Name | Link | Image |\n"
-        readme_content += "|-----------|------|-------|\n"
-        
-        # Populate table rows with card details
-        for card in cards:
-            card_name = f"**{card['name']}**"
-            card_link = f"[Link]({card['url']})"
-            card_image = f"![Image]({card['image_url']})" if 'image_url' in card and card['image_url'] else "No image"
-            
-            # Add row to the table
-            readme_content += f"| {card_name} | {card_link} | {card_image} |\n"
-        
-        # Add a blank line after each table for spacing
-        readme_content += "\n"
+
+    # Create the table header with list names
+    readme_content += "| " + " | ".join(list_names) + " |\n"
+    readme_content += "| " + " | ".join(["---"] * len(list_names)) + " |\n"
+
+    # Add rows of card names under each list
+    for i in range(max_cards):
+        row = []
+        for list_name in list_names:
+            # Add card name if available, else leave cell empty
+            row.append(lists[list_name][i] if i < len(lists[list_name]) else "")
+        readme_content += "| " + " | ".join(row) + " |\n"
 
     with open("README.md", "w") as readme:
         readme.write(readme_content)
