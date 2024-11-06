@@ -31,13 +31,10 @@ jobs:
           TRELLO_BOARD_ID: ${{ secrets.TRELLO_BOARD_ID }}
         run: |
           card_data="{}"
-          for list_id in $(echo "${{ steps.get_lists.outputs.response }}" | jq -r '.[].id'); do
-            list_name=$(echo "${{ steps.get_lists.outputs.response }}" | jq -r ".[] | select(.id==\"$list_id\").name")
-            cards=$(curl -s "https://api.trello.com/1/lists/$list_id/cards?key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}")
-            card_data=$(echo $card_data | jq --argjson new_cards "$cards" --arg list_name "$list_name" '. + {($list_name): $new_cards}')
-          done
-          echo "card_data=$card_data" >> $GITHUB_ENV
-          echo "Final card data: $card_data"
+          # Get all of the list ids from the previous step
+          list_ids=$(echo $response | jq -r '.[].id')
+          echo "list_ids: $list_ids"
+            
 
       - name: Update README
         env:
