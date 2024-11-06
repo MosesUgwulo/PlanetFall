@@ -4,22 +4,26 @@ def update_readme():
     with open('trello_data.json', 'r') as file:
         data = json.load(file)
 
-    # Start building the README content with only the list names as headers
     readme_content = "# Trello Board\n\n"
     
-    # Create table header with list names
     list_names = list(data.keys())
     readme_content += "| " + " | ".join(list_names) + " |\n"
     readme_content += "| " + " | ".join(["---"] * len(list_names)) + " |\n"
 
-    # Find the maximum number of cards in any list to set row length
     max_cards = max(len(cards) for cards in data.values())
     
-    # Add cards under each list name
     for i in range(max_cards):
         row = []
         for list_name in list_names:
-            row.append(data[list_name][i]['name'] if i < len(data[list_name]) else "")
+            if i < len(data[list_name]):
+                card = data[list_name][i]
+                if 'idAttachmentCover' in card and card['idAttachmentCover']:
+                    # If card has a cover image, create image markdown
+                    row.append(f"![{card['name']}](https://trello.com/1/cards/{card['id']}/attachments/{card['idAttachmentCover']}/download)")
+                else:
+                    row.append(card['name'])
+            else:
+                row.append("")
         readme_content += "| " + " | ".join(row) + " |\n"
 
     with open("README.md", "w") as readme:
