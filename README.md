@@ -3,12 +3,12 @@
 | Backlog | Design Ideas | To Do | Doing | Code Review | Done 🎉 |
 | --- | --- | --- | --- | --- | --- |
 | ![Backlog](https://trello.com/1/cards/66cb5bc19148311170bb5831/attachments/66cb5bc19148311170bb5a19/download) | ![Design & Research](https://trello.com/1/cards/66cb5bc19148311170bb5833/attachments/66cb5bc19148311170bb5a22/download) | ![To Do](https://trello.com/1/cards/66cb5bc19148311170bb5835/attachments/66cb5bc19148311170bb5a2b/download) | ![Doing](https://trello.com/1/cards/66cb5bc19148311170bb5837/attachments/66cb5bc19148311170bb5a34/download) | ![Code Review](https://trello.com/1/cards/66cb5bc19148311170bb583b/attachments/66cb5bc19148311170bb5a4b/download) | ![Done](https://trello.com/1/cards/66cb5bc19148311170bb5839/attachments/66cb5bc19148311170bb5a42/download) |
-| Make the player | Alien ecosystems with randomly generated flora and resources (e.g., Cobalt, Copper, Coal) | Procedural planet generation with different terrains (e.g., barren, jungle, oceanic) |  |  |  |
-| ![Feature 1](https://trello.com/1/cards/66cda23322afe8a6aa6d59c8/attachments/66cda2f191f4a4f1388fbd3c/download) | Crafting system to create tools, shelters, and weapons |  |  |  |  |
-| Understand the basics of Procedural Generation | Survival mechanics like hunger, thirst, and temperature regulation |  |  |  |  |
-| Define the Requirements for my Planet Generation | Random mini story events or missions that unfold as the player explores |  |  |  |  |
-| Research existing algorithms and compare them | Random events like meteor showers or natural disasters |  |  |  |  |
-| Choose the most suitable algorithm |  |  |  |  |  |
+| Make the player | Procedural planet generation with different terrains (e.g., barren, jungle, oceanic) |  |  |  |  |
+| ![Feature 1](https://trello.com/1/cards/66cda23322afe8a6aa6d59c8/attachments/66cda2f191f4a4f1388fbd3c/download) | Alien ecosystems with randomly generated flora and resources (e.g., Cobalt, Copper, Coal) |  |  |  |  |
+| Understand the basics of Procedural Generation | Crafting system to create tools, shelters, and weapons |  |  |  |  |
+| Define the Requirements for my Planet Generation | Survival mechanics like hunger, thirst, and temperature regulation |  |  |  |  |
+| Research existing algorithms and compare them | Random mini story events or missions that unfold as the player explores |  |  |  |  |
+| Choose the most suitable algorithm | Random events like meteor showers or natural disasters |  |  |  |  |
 | Plan Implementation |  |  |  |  |  |
 | ![Feature 2](https://trello.com/1/cards/66cda2a82bbe33d7160af360/attachments/66cda34d7808cd83ed1f1d8d/download) |  |  |  |  |  |
 | Define the Scope and Requirements |  |  |  |  |  |
