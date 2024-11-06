@@ -57,9 +57,6 @@ jobs:
           # echo "Final card data:"
           # echo $all_card_data | jq '.'
 
-
-            
-
       - name: Update README
         env:
           CARD_DATA: ${{ env.all_card_data }}
