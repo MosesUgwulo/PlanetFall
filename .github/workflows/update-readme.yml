@@ -37,10 +37,11 @@ jobs:
             card_data=$(echo $card_data | jq --argjson new_cards "$cards" --arg list_name "$list_name" '. + {($list_name): $new_cards}')
           done
           echo "card_data=$card_data" >> $GITHUB_ENV
+          echo "Final card data: $card_data"
 
       - name: Update README
         env:
-          CARD_DATA: ${{ env.CARD_DATA }}
+          CARD_DATA: ${{ env.card_data }}
         run: |
           echo "$CARD_DATA" > trello_data.json
           python update_readme.py
