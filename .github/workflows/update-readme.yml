@@ -32,16 +32,23 @@ jobs:
         run: |
           all_card_data="{}"
           
-          echo $trello_list_response | jq -r '.[] | "\(.name)|\(.id)"' | while IFS='|' read -r list_name list_id; do
-            echo "Processing list: $list_name ($list_id)"
-          
-            cards=$(curl -s "https://api.trello.com/1/lists/${list_id}/cards?key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}")
+          mapfile -t list_names < <(echo $trello_list_response | jq -r '.[].name')
+          mapfile -t list_ids < <(echo $trello_list_response | jq -r '.[].id')
 
-            all_card_data=$(echo $all_card_data | jq --arg list_name "$list_name" --arg cards "$cards_response" \
-              '. + {($list_name): $cards}')
-            
-            cards_count=$(echo $cards_response | jq '. | length')
-              echo "Processed $cards_count cards in list: $list_name"
+          for i in "${!list_names[@]}"; do
+            list_name=${list_names[$i]}
+            list_id=${list_ids[$i]}
+
+            echo "Processing list: $list_name with ID: $list_id"
+
+            card_data=$(curl -s "https://api.trello.com/1/lists/${list_id}/cards?key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}")
+
+            all_card_data=$(echo $all_card_data | jq --arg list_name "$list_name" --argjson cards "$cards_response" \
+            '. + {($list_name): $cards}')
+
+            cards_count=$(echo $card_data | jq length)
+            echo "Processed $cards_count cards for list: $list_name"
+
           done
 
           echo "Final card data:"
