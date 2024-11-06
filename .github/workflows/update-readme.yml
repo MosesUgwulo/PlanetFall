@@ -40,7 +40,7 @@ jobs:
 
       - name: Update README
         env:
-          CARD_DATA: ${{ env.card_data }}
+          CARD_DATA: ${{ env.CARD_DATA }}
         run: |
           echo "$CARD_DATA" > trello_data.json
           python update_readme.py
