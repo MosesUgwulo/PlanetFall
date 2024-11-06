@@ -37,7 +37,7 @@ jobs:
           
             cards=$(curl -s "https://api.trello.com/1/lists/${list_id}/cards?key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}")
 
-            all_cards_data=$(echo $all_cards_data | jq --arg list_name "$list_name" --arg cards "$cards_response" \
+            all_card_data=$(echo $all_card_data | jq --arg list_name "$list_name" --arg cards "$cards_response" \
               '. + {($list_name): $cards}')
             
             cards_count=$(echo $cards_response | jq '. | length')
@@ -45,7 +45,7 @@ jobs:
           done
 
           echo "Final card data:"
-          echo $all_cards_data | jq '.'
+          echo $all_card_data | jq '.'
 
 
             
