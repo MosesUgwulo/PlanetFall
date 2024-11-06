@@ -1,17 +1,14 @@
-[gd_scene load_steps=7 format=4 uid="uid://cfko1j3mivho4"]
+[gd_scene load_steps=6 format=4 uid="uid://cfko1j3mivho4"]
 
 [ext_resource type="Script" path="res://Scripts/Planet.gd" id="1_rnhuu"]
 [ext_resource type="Script" path="res://Scripts/PlanetData.gd" id="2_of0n3"]
 [ext_resource type="Script" path="res://Scripts/PlanetMesh.gd" id="3_vo7hh"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_xr70u"]
-
 [sub_resource type="Resource" id="Resource_3gejs"]
 script = ExtResource("2_of0n3")
-noise = SubResource("FastNoiseLite_xr70u")
 radius = 5.0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_fp7ti"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_n4e65"]
 _surfaces = [{
 "aabb": AABB(-2.1266, -2.12845, -2.12334, 4.25766, 4.25601, 4.25381),
 "format": 34359742471,
@@ -29,5 +26,5 @@ planet_data = SubResource("Resource_3gejs")
 planet_mesh = NodePath("PlanetMesh")
 
 [node name="PlanetMesh" type="MeshInstance3D" parent="."]
-mesh = SubResource("ArrayMesh_fp7ti")
+mesh = SubResource("ArrayMesh_n4e65")
 script = ExtResource("3_vo7hh")

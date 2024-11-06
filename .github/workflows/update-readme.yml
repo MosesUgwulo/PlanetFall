@@ -13,15 +13,36 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Fetch Trello Data
+      - name: Get Trello Lists
+        id: get_lists
         env:
           TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
           TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
+          TRELLO_BOARD_ID: ${{ secrets.TRELLO_BOARD_ID }}
         run: |
-          curl -s "https://api.trello.com/1/boards/5eWdHEpl/cards?key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}" > trello_data.json
+          response=$(curl -s "https://api.trello.com/1/boards/${TRELLO_BOARD_ID}/lists?key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}")
+          echo "response=$response" >> $GITHUB_ENV
+
+      - name: Get Trello Cards for Each List
+        id: get_cards
+        env:
+          TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+          TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
+          TRELLO_BOARD_ID: ${{ secrets.TRELLO_BOARD_ID }}
+        run: |
+          card_data="{}"
+          for list_id in $(echo "${{ steps.get_lists.outputs.response }}" | jq -r '.[].id'); do
+            list_name=$(echo "${{ steps.get_lists.outputs.response }}" | jq -r ".[] | select(.id==\"$list_id\").name")
+            cards=$(curl -s "https://api.trello.com/1/lists/$list_id/cards?key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}")
+            card_data=$(echo $card_data | jq --argjson new_cards "$cards" --arg list_name "$list_name" '. + {($list_name): $new_cards}')
+          done
+          echo "card_data=$card_data" >> $GITHUB_ENV
 
       - name: Update README
+        env:
+          CARD_DATA: ${{ env.card_data }}
         run: |
+          echo "$CARD_DATA" > trello_data.json
           python update_readme.py
       
       - name: Clean up trello_data.json
