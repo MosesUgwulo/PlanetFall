@@ -50,16 +50,17 @@ jobs:
             echo "Processed $cards_count cards for list: $list_name"
 
           done
+          echo "all_card_data=$all_card_data" >> $GITHUB_ENV
 
-          echo "Final card data:"
-          echo $all_card_data | jq '.'
+          # echo "Final card data:"
+          # echo $all_card_data | jq '.'
 
 
             
 
       - name: Update README
         env:
-          CARD_DATA: ${{ env.card_data }}
+          CARD_DATA: ${{ env.all_card_data }}
         run: |
           echo "$CARD_DATA" > trello_data.json
           python update_readme.py
