@@ -20,8 +20,8 @@ jobs:
           TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
           TRELLO_BOARD_ID: ${{ secrets.TRELLO_BOARD_ID }}
         run: |
-          response=$(curl -s "https://api.trello.com/1/boards/${TRELLO_BOARD_ID}/lists?key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}")
-          echo "response=$response" >> $GITHUB_ENV
+          trello_list_response=$(curl -s "https://api.trello.com/1/boards/${TRELLO_BOARD_ID}/lists?key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}")
+          echo "trello_list_response=$trello_list_response" >> $GITHUB_ENV
 
       - name: Get Trello Cards for Each List
         id: get_cards
@@ -32,8 +32,8 @@ jobs:
         run: |
           card_data="{}"
           # Get all of the list ids from the previous step
-          list_ids=$(echo $response | jq -r '.[].id')
-          echo "list_ids: $list_ids"
+          echo $trello_list_response | jq -r '.[] | "\(.id) \(.name)"'
+
             
 
       - name: Update README
