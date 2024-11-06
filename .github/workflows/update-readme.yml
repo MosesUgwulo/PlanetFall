@@ -50,7 +50,9 @@ jobs:
             echo "Processed $cards_count cards for list: $list_name"
 
           done
-          echo "all_card_data=$all_card_data" >> $GITHUB_ENV
+          
+          escaped_json=$(echo $all_card_data | jq -c -M '.')
+          echo "all_card_data=$escaped_json" >> $GITHUB_ENV
 
           # echo "Final card data:"
           # echo $all_card_data | jq '.'
