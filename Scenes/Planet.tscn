@@ -4,27 +4,28 @@
 [ext_resource type="Script" path="res://Scripts/PlanetData.gd" id="2_of0n3"]
 [ext_resource type="Script" path="res://Scripts/PlanetMesh.gd" id="3_vo7hh"]
 
-[sub_resource type="Resource" id="Resource_3gejs"]
+[sub_resource type="Resource" id="Resource_jvoxi"]
 script = ExtResource("2_of0n3")
-radius = 5.0
+radius = 6.84
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_n4e65"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_sfdfi"]
 _surfaces = [{
-"aabb": AABB(-2.1266, -2.12845, -2.12334, 4.25766, 4.25601, 4.25381),
+"aabb": AABB(-5.81845, -5.81845, -5.81845, 11.6369, 11.6369, 11.6369),
 "format": 34359742471,
 "index_count": 60,
 "index_data": PackedByteArray("AAABAAIAAwAAAAIABAADAAIABQAEAAIAAQAFAAIABgAAAAMABwABAAAACAAFAAEACQAEAAUACgADAAQABwAGAAsACAAHAAsACQAIAAsACgAJAAsABgAKAAsAAAAGAAcAAQAHAAgABQAIAAkABAAJAAoAAwAKAAYA"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 12,
-"vertex_data": PackedByteArray("AAAAAHh+qD+FUAhAQBoIwAAAAABkO6g//haov838B0AAAAAAvU6oP+cpCEAAAAAAAAAAACnupz/F2wfAGNIHwAAAAAA04qe/OWMIQAAAAACWlag/AAAAAKGJqL+MWQhADimov2oLCMAAAAAAAAAAAFP5p7/M5AfAERsIQAAAAABmPKi/zWCoP4Q4CMAAAAAA53/rsIxnBKDGMASAfafWs/ZOHM/5PzOs6rA6z+E/ytPPMOf/DUA5jAQA9bBsWLyzJs8EgHdYz7PnfxhP8j84jPNO5jAdQMHTyTAXAI5n+p/6/wexnKe2s+6wyDAFQDys")
+"vertex_data": PackedByteArray("AAAAAOAkZkDBMLpAwTC6wAAAAADgJGZA4CRmwMEwukAAAAAA4CRmQMEwukAAAAAAAAAAAOAkZkDBMLrAwTC6wAAAAADgJGbAwTC6QAAAAADgJGZAAAAAAOAkZsDBMLpA4CRmwMEwusAAAAAAAAAAAOAkZsDBMLrAwTC6QAAAAADgJGbA4CRmQMEwusAAAAAA/3/jsI1n/5/kMP9/jafGsxtPGs//Pzis47Aaz/8/xtMaz////z84jAAAG09xWMazGs//f3FYxrP/fxtP/z84jBtP5DD/P8bTGs8AAI1n/5///+OwjafGs+Ow5DD/Pzis")
 }]
 
 [node name="Planet" type="Node3D" node_paths=PackedStringArray("planet_mesh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0652337, 0, 0.00587749)
 script = ExtResource("1_rnhuu")
-planet_data = SubResource("Resource_3gejs")
+planet_data = SubResource("Resource_jvoxi")
 planet_mesh = NodePath("PlanetMesh")
 
 [node name="PlanetMesh" type="MeshInstance3D" parent="."]
-mesh = SubResource("ArrayMesh_n4e65")
+mesh = SubResource("ArrayMesh_sfdfi")
 script = ExtResource("3_vo7hh")

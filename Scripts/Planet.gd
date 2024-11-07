@@ -2,7 +2,7 @@
 extends Node
 
 @export var planet_data : PlanetData : set = set_planet_data
-@export var planet_mesh : PlanetMesh = null
+@export var planet_mesh : PlanetMesh
 
 func set_planet_data(value):
 	planet_data = value

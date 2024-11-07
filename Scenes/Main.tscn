@@ -16,9 +16,9 @@ sky = SubResource("Sky_n1864")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="Resource" id="Resource_v42it"]
+[sub_resource type="Resource" id="Resource_4hben"]
 script = ExtResource("3_njhf0")
-radius = 15.08
+radius = 6.76
 
 [node name="Root" type="Node3D"]
 
@@ -30,8 +30,8 @@ transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.93456)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 18.9944)
 current = true
 
 [node name="Planet" parent="." instance=ExtResource("2_stmvw")]
-planet_data = SubResource("Resource_v42it")
+planet_data = SubResource("Resource_4hben")
