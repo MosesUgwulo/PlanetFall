@@ -18,7 +18,8 @@ glow_enabled = true
 
 [sub_resource type="Resource" id="Resource_4hben"]
 script = ExtResource("3_njhf0")
-radius = 6.76
+radius = 1.83
+subdivisions = 0.0
 
 [node name="Root" type="Node3D"]
 
@@ -27,6 +28,7 @@ environment = SubResource("Environment_phdfk")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 2.93107, 1.90601, 0)
+light_angular_distance = 90.0
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="."]

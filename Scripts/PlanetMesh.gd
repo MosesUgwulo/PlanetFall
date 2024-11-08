@@ -5,16 +5,24 @@ class_name PlanetMesh
 var triangles = []
 var vertices = []
 
+func _ready():
+	vertices.clear()
+	triangles.clear()
+	mesh = null
+
 
 func generate_planet(planet_data : PlanetData):
+	vertices.clear()
+	triangles.clear()
+	mesh = null
+
 	generate_icosphere()
+	subdivide_icosphere(planet_data)
 	generate_mesh(planet_data)
 
 # Generate an icosphere
 func generate_icosphere():
-	vertices.clear()
-	triangles.clear()
-
+	
 	var t = (1.0 + sqrt(5.0)) / 2.0
 
 	# Vertices
@@ -62,21 +70,69 @@ func generate_mesh(planet_data : PlanetData):
 	for i in triangles.size():
 		var triangle = triangles[i]
 
-		for j in triangle.vertices.size():
-			var vertex = vertices[triangle.vertices[(triangle.vertices.size() - 1) - j]]
+		# Calculate the face normals
+		var a = vertices[triangle.vertices[0]]
+		var b = vertices[triangle.vertices[1]]
+		var c = vertices[triangle.vertices[2]]
+		var normal = (b - a).cross(c - a).normalized()
+
+		for j in range(3):
+			var vertex = vertices[triangle.vertices[2 - j]]
+
 			if planet_data.noise != null:
 				vertex = vertex.normalized() * ((planet_data.noise.get_noise_3dv(vertex * planet_data.noise.frequency * planet_data.noise.fractal_octaves) + 1) * 0.5)
 
+			surface_tool.set_normal(normal)
 			surface_tool.add_vertex(vertex * planet_data.radius)
 
 	surface_tool.index()
-	surface_tool.generate_normals()
 
 	var t = MeshDataTool.new()
 	t.create_from_surface(surface_tool.commit(), 0)
 	self.mesh = surface_tool.commit()
 
+# Subdivide the icosphere
+func subdivide_icosphere(planet_data : PlanetData):
 
+	var cache = {}
+
+	for i in planet_data.subdivisions:
+		var new_triangle = []
+
+		for triangle in triangles:
+			var a = triangle.vertices[0]
+			var b = triangle.vertices[1]
+			var c = triangle.vertices[2]
+
+			var ab = get_middle_point(cache, a, b)
+			var bc = get_middle_point(cache, b, c)
+			var ca = get_middle_point(cache, c, a)
+
+			new_triangle.push_back(Triangle.new(a, ab, ca))
+			new_triangle.push_back(Triangle.new(b, bc, ab))
+			new_triangle.push_back(Triangle.new(c, ca, bc))
+			new_triangle.push_back(Triangle.new(ab, bc, ca))
+
+		triangles = new_triangle
+
+# Get the middle point between two vertices
+func get_middle_point(cache : Dictionary, a, b):
+	var smaller = min(a, b)
+	var greater = max(a, b)
+	var key = (smaller << 16) + greater
+
+	if cache.has(key):
+		return cache.get(key)
+
+	var point_a = vertices[a]
+	var point_b = vertices[b]
+	var middle = lerp(point_a, point_b, 0.5).normalized()
+	var ret = vertices.size()
+	vertices.push_back(middle)
+	cache[key] = ret
+	return ret
+
+# Triangle class
 class Triangle:
 	var vertices = []
 	func _init(a, b, c):

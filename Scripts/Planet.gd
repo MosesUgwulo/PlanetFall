@@ -2,11 +2,10 @@
 extends Node
 
 @export var planet_data : PlanetData : set = set_planet_data
-@export var planet_mesh : PlanetMesh
 
 func set_planet_data(value):
 	planet_data = value
-	planet_mesh.generate_planet(planet_data)
+	_on_planet_changed()
 
 	if planet_data != null and not planet_data.is_connected("changed", _on_planet_changed):
 		planet_data.connect("changed", _on_planet_changed)
@@ -22,4 +21,8 @@ func _process(_delta):
 	pass
 
 func _on_planet_changed():
-	planet_mesh.generate_planet(planet_data)
+	if get_child_count() > 0:
+		var mesh = get_child(0) as PlanetMesh
+		if mesh:
+			mesh.generate_planet(planet_data)
+
