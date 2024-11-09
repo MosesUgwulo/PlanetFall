@@ -19,7 +19,7 @@ glow_enabled = true
 [sub_resource type="Resource" id="Resource_4hben"]
 script = ExtResource("3_njhf0")
 radius = 1.83
-subdivisions = 0.0
+subdivisions = 2.0
 
 [node name="Root" type="Node3D"]
 
