@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://hbkgpxdwnsyy"]
+[gd_scene load_steps=11 format=3 uid="uid://hbkgpxdwnsyy"]
 
 [ext_resource type="Texture2D" uid="uid://dfbgthh5qfnt8" path="res://Assets/panorama_image.png" id="1_oq22l"]
 [ext_resource type="PackedScene" uid="uid://cfko1j3mivho4" path="res://Scenes/Planet.tscn" id="2_stmvw"]
+[ext_resource type="Script" path="res://Scripts/PlanetNoise.gd" id="3_a8a5s"]
 [ext_resource type="Script" path="res://Scripts/PlanetData.gd" id="3_njhf0"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_oaidj"]
@@ -16,9 +17,16 @@ sky = SubResource("Sky_n1864")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0cy03"]
+
+[sub_resource type="Resource" id="Resource_f4xyf"]
+script = ExtResource("3_a8a5s")
+noise = SubResource("FastNoiseLite_0cy03")
+
 [sub_resource type="Resource" id="Resource_4hben"]
 script = ExtResource("3_njhf0")
-radius = 1.83
+planet_noise = SubResource("Resource_f4xyf")
+radius = 4.0
 subdivisions = 2.0
 
 [node name="Root" type="Node3D"]

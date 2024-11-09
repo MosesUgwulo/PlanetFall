@@ -79,8 +79,8 @@ func generate_mesh(planet_data : PlanetData):
 		for j in range(3):
 			var vertex = vertices[triangle.vertices[2 - j]]
 
-			if planet_data.noise != null:
-				vertex = vertex.normalized() * ((planet_data.noise.get_noise_3dv(vertex * planet_data.noise.frequency * planet_data.noise.fractal_octaves) + 1) * 0.5)
+			if planet_data.planet_noise != null and planet_data.planet_noise.noise != null:
+				vertex = vertex.normalized() * ((planet_data.planet_noise.noise.get_noise_3dv(vertex * planet_data.planet_noise.noise.frequency * planet_data.planet_noise.noise.fractal_octaves) + 1) * 0.5)
 
 			surface_tool.set_normal(normal)
 			surface_tool.add_vertex(vertex * planet_data.radius)
