@@ -5,6 +5,7 @@ class_name PlanetNoise
 @export var noise : FastNoiseLite = null : set = set_noise
 @export var amplitude : float = 1.0 : set = set_amplitude
 @export var min_height : float = 0.0 : set = set_min_height
+@export var use_first_layer_as_mask : bool = false : set = set_use_mask
 
 
 func set_noise(value):
@@ -22,6 +23,11 @@ func set_amplitude(value):
 
 func set_min_height(value):
     min_height = value
+    emit_signal("changed")
+
+
+func set_use_mask(value):
+    use_first_layer_as_mask = value
     emit_signal("changed")
 
 

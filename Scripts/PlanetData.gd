@@ -2,36 +2,62 @@
 extends Resource
 class_name PlanetData
 
-@export var planet_noise : PlanetNoise : set = set_planet_noise
+@export var noise_layers : Array[PlanetNoise] : set = set_noise_layers
 @export var radius : float = 1.0 : set = set_radius
 @export_range(0, 6, 1) var subdivisions : float = 0 : set = set_subdivisions
 
 
 func point_on_planet(point_on_sphere : Vector3) -> Vector3:
-	if planet_noise == null or planet_noise.noise == null:
+	if noise_layers.is_empty():
 		return point_on_sphere * radius
 	
-	var noise_val = planet_noise.noise.get_noise_3dv(point_on_sphere * planet_noise.noise.frequency * planet_noise.noise.fractal_octaves)
+	var base_elevation := 0.0
+	var first_layer_raw := 0.0
 
-	noise_val = (noise_val + 1) * 0.5
+	if noise_layers.size() > 0 and noise_layers[0] != null and noise_layers[0].noise != null:
+		var first_noise = noise_layers[0].noise.get_noise_3dv(point_on_sphere * noise_layers[0].noise.frequency * noise_layers[0].noise.fractal_octaves)
 
-	noise_val = noise_val * planet_noise.amplitude
-	noise_val = max(0.0, noise_val - planet_noise.min_height)
+		first_layer_raw = (first_noise + 1.0) * 0.5
 
-	return point_on_sphere * radius * (noise_val + 1.0)
-
-
-func set_planet_noise(value):
-	planet_noise = value
-	emit_signal("changed")
-
-	if planet_noise != null and not planet_noise.is_connected("changed", _on_noise_changed):
-		planet_noise.connect("changed", _on_noise_changed)
-
-
-func _on_noise_changed():
-	emit_signal("changed")
+		base_elevation = first_layer_raw * noise_layers[0].amplitude
+		base_elevation = max(0.0, base_elevation - noise_layers[0].min_height)
 	
+	var total_elevation := base_elevation
+
+	for i in range(1, noise_layers.size()):
+
+		var layer := noise_layers[i]
+		if layer == null or layer.noise == null:
+			continue
+		
+		var mask := 1.0
+
+		if layer.use_first_layer_as_mask:
+			mask = first_layer_raw
+			mask = pow(mask, 2.0)
+
+			if base_elevation <= 0:
+				continue
+		
+		var noise_val = layer.noise.get_noise_3dv(point_on_sphere * layer.noise.frequency * layer.noise.fractal_octaves)
+
+		noise_val = (noise_val + 1.0) * 0.5
+		noise_val = noise_val * layer.amplitude * mask
+		noise_val = max(0.0, noise_val - layer.min_height)
+
+		total_elevation += noise_val
+
+	return point_on_sphere * radius * (total_elevation + 1.0)
+
+
+func set_noise_layers(value):
+	noise_layers = value
+	emit_signal("changed")
+
+	for noise_layer in noise_layers:
+		if noise_layer != null and not noise_layer.is_connected("changed", _on_noise_changed):
+			noise_layer.connect("changed", _on_noise_changed)
+
 
 func set_radius(value):
 	radius = value
@@ -40,4 +66,8 @@ func set_radius(value):
 
 func set_subdivisions(value):
 	subdivisions = value
+	emit_signal("changed")
+
+
+func _on_noise_changed():
 	emit_signal("changed")
