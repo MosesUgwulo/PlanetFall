@@ -74,16 +74,20 @@ func generate_mesh(planet_data : PlanetData):
 		var a = vertices[triangle.vertices[0]]
 		var b = vertices[triangle.vertices[1]]
 		var c = vertices[triangle.vertices[2]]
-		var normal = (b - a).cross(c - a).normalized()
+		
+		
+		var displaced_a = planet_data.point_on_planet(a.normalized())
+		var displaced_b = planet_data.point_on_planet(b.normalized())
+		var displaced_c = planet_data.point_on_planet(c.normalized())
+
+		var normal = (displaced_b - displaced_a).cross(displaced_c - displaced_a).normalized()
 
 		for j in range(3):
-			var vertex = vertices[triangle.vertices[2 - j]]
-
-			if planet_data.planet_noise != null and planet_data.planet_noise.noise != null:
-				vertex = vertex.normalized() * ((planet_data.planet_noise.noise.get_noise_3dv(vertex * planet_data.planet_noise.noise.frequency * planet_data.planet_noise.noise.fractal_octaves) + 1) * 0.5)
+			var vertex = vertices[triangle.vertices[2 - j]].normalized()
+			var displaced_vertex = planet_data.point_on_planet(vertex)
 
 			surface_tool.set_normal(normal)
-			surface_tool.add_vertex(vertex * planet_data.radius)
+			surface_tool.add_vertex(displaced_vertex)
 
 	surface_tool.index()
 
