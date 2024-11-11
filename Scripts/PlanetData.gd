@@ -15,7 +15,9 @@ func point_on_planet(point_on_sphere : Vector3) -> Vector3:
 	var first_layer_raw := 0.0
 
 	if noise_layers.size() > 0 and noise_layers[0] != null and noise_layers[0].noise != null:
-		var first_noise = noise_layers[0].noise.get_noise_3dv(point_on_sphere * noise_layers[0].noise.frequency * noise_layers[0].noise.fractal_octaves)
+		
+		var sample_point = point_on_sphere * noise_layers[0].scale_factor
+		var first_noise = noise_layers[0].noise.get_noise_3dv(sample_point)
 
 		first_layer_raw = (first_noise + 1.0) * 0.5
 
@@ -39,7 +41,8 @@ func point_on_planet(point_on_sphere : Vector3) -> Vector3:
 			if base_elevation <= 0:
 				continue
 		
-		var noise_val = layer.noise.get_noise_3dv(point_on_sphere * layer.noise.frequency * layer.noise.fractal_octaves)
+		var sample_point = point_on_sphere * layer.scale_factor
+		var noise_val = layer.noise.get_noise_3dv(sample_point)
 
 		noise_val = (noise_val + 1.0) * 0.5
 		noise_val = noise_val * layer.amplitude * mask
