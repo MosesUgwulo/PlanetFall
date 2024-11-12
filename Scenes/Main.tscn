@@ -26,7 +26,7 @@ noise = SubResource("FastNoiseLite_ipils")
 amplitude = 0.525
 min_height = 0.3
 use_first_layer_as_mask = false
-scale_factor = null
+scale_factor = 1.0
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_ol8ux"]
 noise_type = 4
@@ -39,7 +39,7 @@ noise = SubResource("FastNoiseLite_ol8ux")
 amplitude = 1.725
 min_height = 0.5
 use_first_layer_as_mask = true
-scale_factor = null
+scale_factor = 1.0
 
 [sub_resource type="Resource" id="Resource_4hben"]
 script = ExtResource("3_njhf0")

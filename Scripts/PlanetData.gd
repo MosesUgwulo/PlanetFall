@@ -6,6 +6,7 @@ class_name PlanetData
 @export var radius : float = 1.0 : set = set_radius
 @export_range(0, 6, 1) var subdivisions : float = 0 : set = set_subdivisions
 
+# MAKE A SEPERATE BRANCH
 
 func point_on_planet(point_on_sphere : Vector3) -> Vector3:
 	if noise_layers.is_empty():
