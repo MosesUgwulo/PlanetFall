@@ -17,33 +17,31 @@ sky = SubResource("Sky_n1864")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ipils"]
-frequency = 0.5
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_v5x7d"]
+noise_type = 0
 
-[sub_resource type="Resource" id="Resource_27r5g"]
+[sub_resource type="Resource" id="Resource_nlsbj"]
 script = ExtResource("3_a8a5s")
-noise = SubResource("FastNoiseLite_ipils")
-amplitude = 0.525
-min_height = 0.3
+noise = SubResource("FastNoiseLite_v5x7d")
+amplitude = 0.43
+min_height = 0.2
 use_first_layer_as_mask = false
-scale_factor = 1.0
+scale_factor = 100.0
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ol8ux"]
-noise_type = 4
-frequency = 0.0196
-metadata/_preview_in_3d_space_ = true
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_2a1l4"]
+noise_type = 2
 
-[sub_resource type="Resource" id="Resource_r83wo"]
+[sub_resource type="Resource" id="Resource_xnqck"]
 script = ExtResource("3_a8a5s")
-noise = SubResource("FastNoiseLite_ol8ux")
-amplitude = 1.725
-min_height = 0.5
+noise = SubResource("FastNoiseLite_2a1l4")
+amplitude = 1.155
+min_height = 0.1
 use_first_layer_as_mask = true
-scale_factor = 1.0
+scale_factor = 20.0
 
 [sub_resource type="Resource" id="Resource_4hben"]
 script = ExtResource("3_njhf0")
-noise_layers = Array[ExtResource("3_a8a5s")]([SubResource("Resource_27r5g"), SubResource("Resource_r83wo")])
+noise_layers = Array[ExtResource("3_a8a5s")]([SubResource("Resource_nlsbj"), SubResource("Resource_xnqck")])
 radius = 3.44
 subdivisions = 4.0
 
