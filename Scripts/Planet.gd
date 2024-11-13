@@ -23,6 +23,17 @@ func _process(_delta):
 func _on_planet_changed():
 	if get_child_count() > 0:
 		var mesh = get_child(0) as PlanetMesh
-		if mesh:
+		if mesh and mesh.material_override and planet_data and planet_data.noise_layers.size() > 0:
+
+			var noise = planet_data.noise_layers[0].noise
+
+			var noise_texture = NoiseTexture2D.new()
+			noise_texture.noise = noise
+			noise_texture.seamless = true
+			noise_texture.width = 512
+			noise_texture.height = 512
+
+			mesh.material_override.set_shader_parameter("noise", noise_texture)
+
 			mesh.generate_planet(planet_data)
 

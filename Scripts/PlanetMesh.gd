@@ -12,9 +12,13 @@ func _ready():
 
 
 func generate_planet(planet_data : PlanetData):
+	planet_data.reset_height()
+
 	vertices.clear()
 	triangles.clear()
 	mesh = null
+
+	
 
 	generate_icosphere()
 	subdivide_icosphere(planet_data)
@@ -90,6 +94,10 @@ func generate_mesh(planet_data : PlanetData):
 			surface_tool.add_vertex(displaced_vertex)
 
 	surface_tool.index()
+
+	if material_override:
+		material_override.set_shader_parameter("min_height", planet_data.min_height)
+		material_override.set_shader_parameter("max_height", planet_data.max_height)
 
 	var t = MeshDataTool.new()
 	t.create_from_surface(surface_tool.commit(), 0)

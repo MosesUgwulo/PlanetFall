@@ -6,6 +6,9 @@ class_name PlanetData
 @export var radius : float = 1.0 : set = set_radius
 @export_range(0, 6, 1) var subdivisions : float = 0 : set = set_subdivisions
 
+var min_height : float = INF
+var max_height : float = -INF
+
 # MAKE A SEPERATE BRANCH
 
 func point_on_planet(point_on_sphere : Vector3) -> Vector3:
@@ -51,7 +54,13 @@ func point_on_planet(point_on_sphere : Vector3) -> Vector3:
 
 		total_elevation += noise_val
 
-	return point_on_sphere * radius * (total_elevation + 1.0)
+	var final_point = point_on_sphere * radius * (total_elevation + 1.0)
+
+	var height = final_point.length()
+	min_height = min(min_height, height)
+	max_height = max(max_height, height)
+
+	return final_point
 
 
 func set_noise_layers(value):
@@ -75,3 +84,8 @@ func set_subdivisions(value):
 
 func _on_noise_changed():
 	emit_signal("changed")
+
+
+func reset_height():
+	min_height = INF
+	max_height = -INF
