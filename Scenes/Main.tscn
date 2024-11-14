@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://hbkgpxdwnsyy"]
+[gd_scene load_steps=11 format=3 uid="uid://hbkgpxdwnsyy"]
 
 [ext_resource type="Texture2D" uid="uid://dfbgthh5qfnt8" path="res://Assets/panorama_image.png" id="1_oq22l"]
 [ext_resource type="PackedScene" uid="uid://cfko1j3mivho4" path="res://Scenes/Planet.tscn" id="2_stmvw"]
@@ -17,34 +17,25 @@ sky = SubResource("Sky_n1864")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ipils"]
-frequency = 0.5
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_yv6u2"]
+frequency = 0.6
 
-[sub_resource type="Resource" id="Resource_27r5g"]
+[sub_resource type="Resource" id="Resource_2hybs"]
 script = ExtResource("3_a8a5s")
-noise = SubResource("FastNoiseLite_ipils")
-amplitude = 0.525
-min_height = 0.3
-use_first_layer_as_mask = false
-scale_factor = 1.0
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ol8ux"]
-noise_type = 4
-frequency = 0.0196
-metadata/_preview_in_3d_space_ = true
-
-[sub_resource type="Resource" id="Resource_r83wo"]
-script = ExtResource("3_a8a5s")
-noise = SubResource("FastNoiseLite_ol8ux")
-amplitude = 1.725
-min_height = 0.5
-use_first_layer_as_mask = true
-scale_factor = 1.0
+noise = SubResource("FastNoiseLite_yv6u2")
+strength = 0.375
+num_layers = 8
+base_roughness = 1.845
+roughness = 6.18
+persistence = 0.15
+center = Vector3(0.3, 0, 0)
+min_height = 0.56
+use_first_layer_as_mask = null
 
 [sub_resource type="Resource" id="Resource_4hben"]
 script = ExtResource("3_njhf0")
-noise_layers = Array[ExtResource("3_a8a5s")]([SubResource("Resource_27r5g"), SubResource("Resource_r83wo")])
-radius = 3.44
+planet_noise = SubResource("Resource_2hybs")
+radius = 3.57
 subdivisions = 4.0
 
 [node name="Root" type="Node3D"]
