@@ -71,6 +71,25 @@ func generate_mesh(planet_data : PlanetData):
 	var surface_tool = SurfaceTool.new()
 	surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 
+	var vertex_heights = {}
+	for vertex_idx in vertices.size():
+		var vertex = vertices[vertex_idx].normalized()
+		var height = planet_data.get_vertex_height(vertex)
+		vertex_heights[vertex_idx] = height
+	
+	for triangle in triangles:
+		for i in range(3):
+			var current_idx = triangle.vertices[i]
+			var next_idx = triangle.vertices[(i + 1) % 3]
+
+			var current_height = vertex_heights[current_idx]
+			var next_height = vertex_heights[next_idx]
+
+			if abs(current_height - next_height) > 0.01:
+				var avg_height = (current_height + next_height) / 2.0
+				vertex_heights[current_idx] = lerp(current_height, avg_height, 0.5)
+				vertex_heights[next_idx] = lerp(next_height, avg_height, 0.5)
+
 	for i in triangles.size():
 		var triangle = triangles[i]
 
@@ -78,17 +97,21 @@ func generate_mesh(planet_data : PlanetData):
 		var a = vertices[triangle.vertices[0]]
 		var b = vertices[triangle.vertices[1]]
 		var c = vertices[triangle.vertices[2]]
+
+		var height_a = vertex_heights[triangle.vertices[0]]
+		var height_b = vertex_heights[triangle.vertices[1]]
+		var height_c = vertex_heights[triangle.vertices[2]]
 		
-		
-		var displaced_a = planet_data.point_on_planet(a.normalized())
-		var displaced_b = planet_data.point_on_planet(b.normalized())
-		var displaced_c = planet_data.point_on_planet(c.normalized())
+		var displaced_a = a.normalized() * planet_data.radius * (height_a + 1.0)
+		var displaced_b = b.normalized() * planet_data.radius * (height_b + 1.0)
+		var displaced_c = c.normalized() * planet_data.radius * (height_c + 1.0)
 
 		var normal = (displaced_b - displaced_a).cross(displaced_c - displaced_a).normalized()
 
 		for j in range(3):
 			var vertex = vertices[triangle.vertices[2 - j]].normalized()
-			var displaced_vertex = planet_data.point_on_planet(vertex)
+			var height = vertex_heights[triangle.vertices[2 - j]]
+			var displaced_vertex = vertex * planet_data.radius * (height + 1.0)
 
 			surface_tool.set_normal(normal)
 			surface_tool.add_vertex(displaced_vertex)
