@@ -1,16 +1,14 @@
 shader_type spatial;
 
 uniform vec4 water : source_color;
-uniform vec4 shore : source_color;
 uniform vec4 grass : source_color;
+uniform vec4 hill : source_color;
 uniform vec4 mountain : source_color;
-uniform vec4 snow : source_color;
 
-uniform float water_level : hint_range(0.0, 1.0);
-uniform float mountain_level : hint_range(0.0, 1.0);
-uniform float snow_level : hint_range(0.0, 1.0);
-
-uniform sampler2D noise;
+uniform float water_height : hint_range(0.0, 1.0);
+uniform float grass_height : hint_range(0.0, 1.0);
+uniform float hill_height : hint_range(0.0, 1.0);
+uniform float mountain_height : hint_range(0.0, 1.0);
 
 uniform float min_height = 0.0;
 uniform float max_height = 1.0;
@@ -27,25 +25,14 @@ void fragment() {
 	float ratio = height;
 	vec4 tex;
 
-	if (ratio < water_level) {
-		float shore_ratio = 0.005;
-		if (ratio > water_level - shore_ratio) {
-			tex = shore;
-		}
-		else {
-			// tex = texture(noise, sin(TIME * UV)) * water;
-			tex = water;
-		}
-	}
-	else if (ratio < mountain_level) {
-		// tex = texture(noise, UV) * grass; 
+	if (ratio < water_height) {
+		tex = water;
+	} else if (ratio < grass_height) {
 		tex = grass;
-	}
-	else if (ratio < snow_level) {
+	} else if (ratio < hill_height) {
+		tex = hill;
+	} else {
 		tex = mountain;
-	}
-	else {
-		tex = snow;
 	}
 
 	ALBEDO = tex.rgb;

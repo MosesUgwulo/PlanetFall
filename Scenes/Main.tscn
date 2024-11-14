@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://hbkgpxdwnsyy"]
+[gd_scene load_steps=11 format=3 uid="uid://hbkgpxdwnsyy"]
 
 [ext_resource type="Texture2D" uid="uid://dfbgthh5qfnt8" path="res://Assets/panorama_image.png" id="1_oq22l"]
 [ext_resource type="PackedScene" uid="uid://cfko1j3mivho4" path="res://Scenes/Planet.tscn" id="2_stmvw"]
@@ -19,6 +19,7 @@ glow_enabled = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_v5x7d"]
 noise_type = 0
+frequency = 0.0108
 
 [sub_resource type="Resource" id="Resource_nlsbj"]
 script = ExtResource("3_a8a5s")
@@ -28,22 +29,15 @@ min_height = 0.2
 use_first_layer_as_mask = false
 scale_factor = 100.0
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_2a1l4"]
-noise_type = 2
-
-[sub_resource type="Resource" id="Resource_xnqck"]
-script = ExtResource("3_a8a5s")
-noise = SubResource("FastNoiseLite_2a1l4")
-amplitude = 1.155
-min_height = 0.1
-use_first_layer_as_mask = true
-scale_factor = 20.0
-
 [sub_resource type="Resource" id="Resource_4hben"]
 script = ExtResource("3_njhf0")
-noise_layers = Array[ExtResource("3_a8a5s")]([SubResource("Resource_nlsbj"), SubResource("Resource_xnqck")])
-radius = 8.0
+noise_layers = Array[ExtResource("3_a8a5s")]([SubResource("Resource_nlsbj")])
+radius = 3.88
 subdivisions = 2.0
+water_height = 0.08
+grass_height = 0.255
+hill_height = 0.26
+mountain_height = 0.5
 
 [node name="Root" type="Node3D"]
 

@@ -6,6 +6,11 @@ class_name PlanetData
 @export var radius : float = 1.0 : set = set_radius
 @export_range(0, 6, 1) var subdivisions : float = 0 : set = set_subdivisions
 
+@export var water_height : float = 0.0
+@export var grass_height : float = 0.1
+@export var hill_height : float = 0.2
+@export var mountain_height : float = 0.3
+
 var min_height : float = INF
 var max_height : float = -INF
 
@@ -53,12 +58,22 @@ func point_on_planet(point_on_sphere : Vector3) -> Vector3:
 		noise_val = max(0.0, noise_val - layer.min_height)
 
 		total_elevation += noise_val
+		
+	var height = 0.0
+
+	if total_elevation < 0.25:
+		height = lerp(0.0, 0.25, total_elevation)
+	elif total_elevation < 0.5:
+		height = lerp(0.25, 0.5, total_elevation)
+	elif total_elevation < 0.75:
+		height = lerp(0.5, 0.75, total_elevation)
+	else:
+		height = lerp(0.75, 1.0, total_elevation)
 
 	var final_point = point_on_sphere * radius * (total_elevation + 1.0)
 
-	var height = final_point.length()
-	min_height = min(min_height, height)
-	max_height = max(max_height, height)
+	min_height = min(min_height, final_point.length())
+	max_height = max(max_height, final_point.length())
 
 	return final_point
 
