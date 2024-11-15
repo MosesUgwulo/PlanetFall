@@ -74,7 +74,7 @@ func generate_mesh(planet_data : PlanetData):
 	var vertex_heights = {}
 	for vertex_idx in vertices.size():
 		var vertex = vertices[vertex_idx].normalized()
-		var height = planet_data.get_vertex_height(vertex)
+		var height = planet_data.point_on_planet(vertex).length()
 		vertex_heights[vertex_idx] = height
 	
 	for triangle in triangles:

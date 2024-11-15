@@ -23,6 +23,8 @@ func point_on_planet(point_on_sphere : Vector3) -> Vector3:
 	var height = get_vertex_height(point_on_sphere)
 	var final_point = point_on_sphere * radius * (height + 1.0)
 
+	# print("Final Point: ", final_point)
+
 	min_height = min(min_height, final_point.length())
 	max_height = max(max_height, final_point.length())
 
