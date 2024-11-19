@@ -8,6 +8,9 @@ class_name PlanetNoise
 # Controls the height range of the noise
 @export var amplitude : float = 1.0 : set = set_amplitude
 
+# Controls the strength of the noise
+@export var strength : float = 1.0 : set = set_strength
+
 # Minimum height threshold for the noise to take effect
 @export var min_height : float = 0.0 : set = set_min_height
 
@@ -29,6 +32,11 @@ func set_noise(value):
 
 func set_amplitude(value):
     amplitude = value
+    emit_signal("changed")
+
+
+func set_strength(value):
+    strength = value
     emit_signal("changed")
 
 

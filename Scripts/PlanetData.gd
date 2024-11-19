@@ -52,7 +52,9 @@ func point_on_planet(point_on_sphere : Vector3) -> Vector3:
 		# Calculate base elevation
 		base_elevation = first_layer * noise_layers[0].amplitude
 		base_elevation = max(0.0, base_elevation - noise_layers[0].min_height)
-	
+
+		base_elevation *= noise_layers[0].strength
+
 	var total_elevation := base_elevation
 
 	# Process subsequent noise layers
@@ -80,22 +82,24 @@ func point_on_planet(point_on_sphere : Vector3) -> Vector3:
 		noise_val = noise_val * layer.amplitude * mask
 		noise_val = max(0.0, noise_val - layer.min_height)
 
+		noise_val *= layer.strength
+
 		total_elevation += noise_val
 	
 	# Determine terrain types based on elevation
-	var height = 0.0
+	# var height = 0.0
 
-	if total_elevation < 0.25:
-		height = water_height
-	elif total_elevation < 0.5:
-		height = grass_height
-	elif total_elevation < 0.75:
-		height = hill_height
-	else:
-		height = mountain_height
+	# if total_elevation < 0.25:
+	# 	height = water_height
+	# elif total_elevation < 0.5:
+	# 	height = grass_height
+	# elif total_elevation < 0.75:
+	# 	height = hill_height
+	# else:
+	# 	height = mountain_height
 
 	# Calculate final point
-	var final_point = point_on_sphere * radius * (height + 1.0)
+	var final_point = point_on_sphere * radius * (total_elevation + 1.0)
 
 	min_height = min(min_height, final_point.length())
 	max_height = max(max_height, final_point.length())
