@@ -61,6 +61,15 @@ func calculate_total_elevation(point_on_sphere: Vector3) -> float:
 		
 		first_layer = calculate_first_layer(point_on_sphere)
 
+		if first_layer < 0.2:
+			first_layer = 0.0
+		else:
+		# print("First layer: ", first_layer)
+
+			first_layer = snapped(first_layer, 0.2)
+		
+			# print("First layer snapped: ", first_layer)
+
 		# Calculate base elevation
 		base_elevation = first_layer * noise_layers[0].amplitude
 		base_elevation = max(0.0, base_elevation - noise_layers[0].min_height)
@@ -69,7 +78,11 @@ func calculate_total_elevation(point_on_sphere: Vector3) -> float:
 	var total_elevation := base_elevation
 
 	for i in range(1, noise_layers.size()):
-		total_elevation += calculate_layer_elevation(point_on_sphere, i, first_layer, base_elevation)
+		var layer_elevation = calculate_layer_elevation(point_on_sphere, i, first_layer, base_elevation)
+		
+
+		layer_elevation = snapped(layer_elevation, 0.2)
+		total_elevation += layer_elevation
 	
 	return total_elevation
 
@@ -112,6 +125,8 @@ func calculate_layer_elevation(point_on_sphere: Vector3, layer_index: int, first
 	var noise_val = layer.noise.get_noise_3dv(sample_point)
 
 	noise_val = (noise_val + 1.0) * 0.5
+
+
 	noise_val = noise_val * layer.amplitude * mask
 	noise_val = max(0.0, noise_val - layer.min_height)
 	noise_val *= layer.strength
@@ -124,12 +139,13 @@ func calculate_terrain_height(total_elevation: float) -> float:
 	"""
 	Converts the total elevation to a terrain height value
 	"""
+	
 
-	if total_elevation < 0.25:
+	if total_elevation <= water_height:
 		return water_height
-	elif total_elevation < 0.5:
+	elif total_elevation <= grass_height:
 		return grass_height
-	elif total_elevation < 0.75:
+	elif total_elevation <= hill_height:
 		return hill_height
 	else:
 		return mountain_height
@@ -142,7 +158,9 @@ func calculate_final_point(point_on_sphere: Vector3, height: float) -> Vector3:
 	Updates min and max height values for shader parameters
 	"""
 
-	var final_point = point_on_sphere * radius * (height + 1.0)
+	var elevation_mult = 1.0 + (height * 1.2)
+
+	var final_point = point_on_sphere * radius * elevation_mult
 
 	min_height = min(min_height, final_point.length())
 	max_height = max(max_height, final_point.length())
