@@ -21,7 +21,7 @@ func generate_planet(planet_data : PlanetData):
 	Parameters:
 		planet_data: Contains the parameters for planet generation (noise layers, radius, terrain heights, etc...)
 	"""
-
+	
 	# Reset min and max height tracking in planet data
 	planet_data.reset_height()
 
@@ -105,6 +105,7 @@ func generate_mesh(planet_data : PlanetData):
 		var a = vertices[triangle.vertices[0]]
 		var b = vertices[triangle.vertices[1]]
 		var c = vertices[triangle.vertices[2]]
+		
 		
 		# Apply height displacement to each vertex
 		var displaced_a = planet_data.point_on_planet(a.normalized())

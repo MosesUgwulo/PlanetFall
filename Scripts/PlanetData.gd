@@ -24,7 +24,7 @@ var max_height : float = -INF
 
 
 func point_on_planet(point_on_sphere : Vector3) -> Vector3:
-
+	
 	"""
 	Calculates the final position of a point on the planet's surface
 	taking into account the noise layers and terrain height thresholds
@@ -38,7 +38,7 @@ func point_on_planet(point_on_sphere : Vector3) -> Vector3:
 	if noise_layers.is_empty():
 		return point_on_sphere * radius
 	
-
+	
 	var total_elevation = calculate_total_elevation(point_on_sphere)
 
 
@@ -53,23 +53,19 @@ func calculate_total_elevation(point_on_sphere: Vector3) -> float:
 	"""
 	Calculates the total elevation from all noise layers
 	"""
+	
 	var base_elevation := 0.0
 	var first_layer := 0.0
 
+	
 	# Process first noise layer (can be used as a mask for subsequent layers)
 	if noise_layers.size() > 0 and noise_layers[0] != null and noise_layers[0].noise != null:
 		
 		first_layer = calculate_first_layer(point_on_sphere)
 
-		if first_layer < 0.2:
-			first_layer = 0.0
-		else:
-		# print("First layer: ", first_layer)
 
-			first_layer = snapped(first_layer, 0.2)
+		first_layer = snapped(first_layer, 0.2)
 		
-			# print("First layer snapped: ", first_layer)
-
 		# Calculate base elevation
 		base_elevation = first_layer * noise_layers[0].amplitude
 		base_elevation = max(0.0, base_elevation - noise_layers[0].min_height)
@@ -80,10 +76,10 @@ func calculate_total_elevation(point_on_sphere: Vector3) -> float:
 	for i in range(1, noise_layers.size()):
 		var layer_elevation = calculate_layer_elevation(point_on_sphere, i, first_layer, base_elevation)
 		
-
 		layer_elevation = snapped(layer_elevation, 0.2)
 		total_elevation += layer_elevation
-	
+
+
 	return total_elevation
 
 
@@ -108,6 +104,8 @@ func calculate_layer_elevation(point_on_sphere: Vector3, layer_index: int, first
 
 	var layer := noise_layers[layer_index]
 
+	
+
 	if layer == null or layer.noise == null:
 		return 0.0
 	
@@ -126,7 +124,6 @@ func calculate_layer_elevation(point_on_sphere: Vector3, layer_index: int, first
 
 	noise_val = (noise_val + 1.0) * 0.5
 
-
 	noise_val = noise_val * layer.amplitude * mask
 	noise_val = max(0.0, noise_val - layer.min_height)
 	noise_val *= layer.strength
@@ -141,14 +138,18 @@ func calculate_terrain_height(total_elevation: float) -> float:
 	"""
 	
 
-	if total_elevation <= water_height:
-		return water_height
-	elif total_elevation <= grass_height:
-		return grass_height
-	elif total_elevation <= hill_height:
-		return hill_height
+	if total_elevation < water_height:
+		return 0.0
+	elif total_elevation == water_height:
+		return 0.2
+	elif total_elevation == grass_height:
+		return 0.4
+	elif total_elevation == hill_height:
+		return 0.6
+	elif total_elevation == mountain_height:
+		return 0.8
 	else:
-		return mountain_height
+		return 0.0
 
 
 
@@ -158,7 +159,7 @@ func calculate_final_point(point_on_sphere: Vector3, height: float) -> Vector3:
 	Updates min and max height values for shader parameters
 	"""
 
-	var elevation_mult = 1.0 + (height * 1.2)
+	var elevation_mult = 1.0 + (height * 1.0)
 
 	var final_point = point_on_sphere * radius * elevation_mult
 

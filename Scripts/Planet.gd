@@ -33,7 +33,7 @@ func _on_planet_changed():
 	Handles updates when the planet data resource is changed
 	Also updates shader parameters and regenerates the planet mesh
 	"""
-
+	
 	if get_child_count() > 0:
 		var mesh = get_child(0) as PlanetMesh
 		if mesh and mesh.material_override:
