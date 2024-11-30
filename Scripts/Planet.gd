@@ -23,6 +23,7 @@ func _ready():
 	_on_planet_changed()
 
 
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
@@ -43,5 +44,7 @@ func _on_planet_changed():
 			mesh.material_override.set_shader_parameter("grass_height", planet_data.grass_height)
 			mesh.material_override.set_shader_parameter("hill_height", planet_data.hill_height)
 			mesh.material_override.set_shader_parameter("mountain_height", planet_data.mountain_height)
+			print("Min height: ", planet_data.min_height)
+			print("Max height: ", planet_data.max_height)
 			mesh.generate_planet(planet_data)
 

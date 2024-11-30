@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="PlanetData" load_steps=5 format=3 uid="uid://dqfv38cguw26g"]
+
+[ext_resource type="Script" path="res://Scripts/PlanetNoise.gd" id="1_arb3o"]
+[ext_resource type="Script" path="res://Scripts/PlanetData.gd" id="2_3b8vj"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_v5x7d"]
+
+[sub_resource type="Resource" id="Resource_nlsbj"]
+script = ExtResource("1_arb3o")
+noise = SubResource("FastNoiseLite_v5x7d")
+amplitude = 1.0
+strength = 1.0
+min_height = 0.4
+use_first_layer_as_mask = false
+scale_factor = 100.0
+
+[resource]
+script = ExtResource("2_3b8vj")
+noise_layers = Array[ExtResource("1_arb3o")]([SubResource("Resource_nlsbj")])
+radius = 5.065
+subdivisions = 4.0
+water_height = 0.1
+grass_height = 0.2
+hill_height = 0.2
+mountain_height = 0.3

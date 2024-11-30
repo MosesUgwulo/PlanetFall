@@ -63,9 +63,9 @@ func calculate_total_elevation(point_on_sphere: Vector3) -> float:
 		
 		first_layer = calculate_first_layer(point_on_sphere)
 
+		# print("First layer: ", first_layer)
+		first_layer = calculate_terrain_height(first_layer)
 
-		first_layer = snapped(first_layer, 0.2)
-		
 		# Calculate base elevation
 		base_elevation = first_layer * noise_layers[0].amplitude
 		base_elevation = max(0.0, base_elevation - noise_layers[0].min_height)
@@ -73,12 +73,16 @@ func calculate_total_elevation(point_on_sphere: Vector3) -> float:
 
 	var total_elevation := base_elevation
 
-	for i in range(1, noise_layers.size()):
-		var layer_elevation = calculate_layer_elevation(point_on_sphere, i, first_layer, base_elevation)
-		
-		layer_elevation = snapped(layer_elevation, 0.2)
-		total_elevation += layer_elevation
+	# print("Total elevation: ", total_elevation)
+	# total_elevation = snapped(total_elevation, 0.2)
 
+	# for i in range(1, noise_layers.size()):
+	# 	var layer_elevation = calculate_layer_elevation(point_on_sphere, i, first_layer, base_elevation)
+		
+	# 	layer_elevation = snapped(layer_elevation, 0.2)
+	# 	total_elevation += layer_elevation
+
+	
 
 	return total_elevation
 
@@ -113,7 +117,7 @@ func calculate_layer_elevation(point_on_sphere: Vector3, layer_index: int, first
 
 	# Apply first layer as mask if enabled
 	if layer.use_first_layer_as_mask:
-		mask = pow(first_layer, 2.0)
+		mask = pow(first_layer, 1.0)
 
 		if base_elevation <= 0:
 			return 0.0
@@ -137,20 +141,12 @@ func calculate_terrain_height(total_elevation: float) -> float:
 	Converts the total elevation to a terrain height value
 	"""
 	
+	total_elevation = snapped(total_elevation, 0.2)
+	# print("Total elevation: ", total_elevation)
 
-	if total_elevation < water_height:
-		return 0.0
-	elif total_elevation == water_height:
-		return 0.2
-	elif total_elevation == grass_height:
-		return 0.4
-	elif total_elevation == hill_height:
-		return 0.6
-	elif total_elevation == mountain_height:
-		return 0.8
-	else:
-		return 0.0
-
+	return total_elevation
+	
+	
 
 
 func calculate_final_point(point_on_sphere: Vector3, height: float) -> Vector3:
@@ -159,12 +155,15 @@ func calculate_final_point(point_on_sphere: Vector3, height: float) -> Vector3:
 	Updates min and max height values for shader parameters
 	"""
 
-	var elevation_mult = 1.0 + (height * 1.0)
+	var elevation_mult = 1.0 + (height * 0.5)
 
 	var final_point = point_on_sphere * radius * elevation_mult
 
-	min_height = min(min_height, final_point.length())
-	max_height = max(max_height, final_point.length())
+	# Making sure the final point is never below the planet's radius
+	var point_length = maxf(final_point.length(), radius)
+
+	min_height = min(min_height, point_length)
+	max_height = max(max_height, point_length)
 
 	return final_point
 

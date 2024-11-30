@@ -199,6 +199,7 @@ func get_middle_point(cache : Dictionary, a, b):
 	return ret
 
 # Class to represent a triangle face with 3 vertices
+
 class Triangle:
 	var vertices = []
 	func _init(a, b, c):
