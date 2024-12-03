@@ -11,6 +11,8 @@ class_name PlanetData
 # Number of times to subdivide the base icosphere (higher values = more detail)
 @export_range(0, 6, 1) var subdivisions : float = 0 : set = set_subdivisions
 
+@export var use_stepped_terrain: bool = false
+
 # Height thresholds for different terrain types
 @export var water_height : float = 0.0
 @export var grass_height : float = 0.1
@@ -22,8 +24,10 @@ class_name PlanetData
 var min_height : float = INF
 var max_height : float = -INF
 
+var noise_values = []
 
-func point_on_planet(point_on_sphere : Vector3) -> Vector3:
+
+func points_on_planet(points_on_sphere : Array[Vector3]) -> Array[Vector3]:
 	
 	"""
 	Calculates the final position of a point on the planet's surface
@@ -36,42 +40,51 @@ func point_on_planet(point_on_sphere : Vector3) -> Vector3:
 
 	# Return basic sphere if no noise layers are present
 	if noise_layers.is_empty():
-		return point_on_sphere * radius
+		return points_on_sphere.map(func(p): return p * radius)
 	
 	
-	var total_elevation = calculate_total_elevation(point_on_sphere)
+	var total_elevations = calculate_total_elevations(points_on_sphere)
 
 
 	# var height = calculate_terrain_height(total_elevation)
 
 
-	return calculate_final_point(point_on_sphere, total_elevation)
+	return calculate_final_points(points_on_sphere, total_elevations)
 
 
-func calculate_total_elevation(point_on_sphere: Vector3) -> float:
+func calculate_total_elevations(points_on_sphere: Array[Vector3]) -> Array[float]:
 
 	"""
 	Calculates the total elevation from all noise layers
 	"""
 	
+	if use_stepped_terrain:
+		return calculate_stepped_terrain(points_on_sphere)
+	else:
+		return calculate_continous_terrain(points_on_sphere)
+
+
+func calculate_continous_terrain(points_on_sphere: Array[Vector3]) -> Array[float]:
+
 	var base_elevation := 0.0
 	var first_layer := 0.0
-
+	var total_elevation: Array[float] = []
 	
 	# Process first noise layer (can be used as a mask for subsequent layers)
 	if noise_layers.size() > 0 and noise_layers[0] != null and noise_layers[0].noise != null:
-		
-		first_layer = calculate_first_layer(point_on_sphere)
 
-		# print("First layer: ", first_layer)
-		first_layer = calculate_terrain_height(first_layer)
+		for point in points_on_sphere:
+			first_layer = calculate_noise(point)
 
-		# Calculate base elevation
-		base_elevation = first_layer * noise_layers[0].amplitude
-		base_elevation = max(0.0, base_elevation - noise_layers[0].min_height)
-		base_elevation *= noise_layers[0].strength
+			# print("First layer: ", first_layer)
+			first_layer = calculate_terrain_height(first_layer)
 
-	var total_elevation := base_elevation
+			# Calculate base elevation
+			base_elevation = first_layer * noise_layers[0].amplitude
+			base_elevation = max(0.0, base_elevation - noise_layers[0].min_height)
+			base_elevation *= noise_layers[0].strength
+
+			total_elevation.push_back(base_elevation)
 
 	# print("Total elevation: ", total_elevation)
 	# total_elevation = snapped(total_elevation, 0.2)
@@ -82,13 +95,48 @@ func calculate_total_elevation(point_on_sphere: Vector3) -> float:
 	# 	layer_elevation = snapped(layer_elevation, 0.2)
 	# 	total_elevation += layer_elevation
 
-	
-
 	return total_elevation
 
 
 
-func calculate_first_layer(point_on_sphere: Vector3) -> float:
+func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]:
+	
+	if noise_layers[0] == null or noise_layers[0].noise == null:
+		var zeros: Array[float] = []
+		zeros.resize(points_on_sphere.size())
+		zeros.fill(0.0)
+		return zeros
+	
+	var minVal = INF
+	var maxVal = -INF
+	var elevations: Array[float] = []
+
+	for point in points_on_sphere:
+		var noise_value = calculate_noise(point)
+		minVal = min(minVal, noise_value)
+		maxVal = max(maxVal, noise_value)
+
+	print("Min: ", minVal, " Max: ", maxVal)
+
+	for point in points_on_sphere:
+		var normalisedMagnitude = (calculate_noise(point) - minVal) / (maxVal - minVal)
+
+		var normalisedPoint = point.normalized() * normalisedMagnitude
+
+		var elevation = normalisedPoint.length()
+
+		if elevation <= 0.1:
+			elevations.push_back(0.0)
+		else:
+			elevations.push_back(1.0)
+	
+	
+	return elevations
+	
+
+
+
+func calculate_noise(point_on_sphere: Vector3) -> float:
 	"""
 	Calculates the first noise layer value
 	"""
@@ -149,23 +197,33 @@ func calculate_terrain_height(total_elevation: float) -> float:
 	
 
 
-func calculate_final_point(point_on_sphere: Vector3, height: float) -> Vector3:
+func calculate_final_points(points_on_sphere: Array[Vector3], heights: Array[float]) -> Array[Vector3]:
 	"""
 	Calculates the final point on the planet's surface based on the terrain height
 	Updates min and max height values for shader parameters
 	"""
+	var final_points: Array[Vector3] = []
 
-	var elevation_mult = 1.0 + (height * 0.5)
+	for i in range(points_on_sphere.size()):
+		var point = points_on_sphere[i]
+		var height = heights[i]
 
-	var final_point = point_on_sphere * radius * elevation_mult
+		var elevation_mult = 1.0 + (height * 0.5)
 
-	# Making sure the final point is never below the planet's radius
-	var point_length = maxf(final_point.length(), radius)
+		var final_point = point * radius * elevation_mult
 
-	min_height = min(min_height, point_length)
-	max_height = max(max_height, point_length)
+		var max_radius = radius * (1.0 + 0.5)
 
-	return final_point
+		var normalised_point = final_point * (1.0 / max_radius)
+
+		var scaled_radius = normalised_point * radius
+ 
+		min_height = min(min_height, scaled_radius.length())
+		max_height = max(max_height, scaled_radius.length())
+
+		final_points.push_back(scaled_radius)
+
+	return final_points
 
 
 
@@ -205,3 +263,4 @@ func reset_height():
 	
 	min_height = INF
 	max_height = -INF
+	

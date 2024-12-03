@@ -8,7 +8,7 @@
 [sub_resource type="Resource" id="Resource_nlsbj"]
 script = ExtResource("1_arb3o")
 noise = SubResource("FastNoiseLite_v5x7d")
-amplitude = 1.0
+amplitude = 1.05
 strength = 1.0
 min_height = 0.4
 use_first_layer_as_mask = false
@@ -17,8 +17,10 @@ scale_factor = 100.0
 [resource]
 script = ExtResource("2_3b8vj")
 noise_layers = Array[ExtResource("1_arb3o")]([SubResource("Resource_nlsbj")])
-radius = 5.065
+radius = 5.0
 subdivisions = 4.0
+use_stepped_terrain = true
+debug = false
 water_height = 0.1
 grass_height = 0.2
 hill_height = 0.2

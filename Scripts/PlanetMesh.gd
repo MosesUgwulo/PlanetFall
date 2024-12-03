@@ -97,31 +97,34 @@ func generate_mesh(planet_data : PlanetData):
 	var surface_tool = SurfaceTool.new()
 	surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 
-	# Process each triangle
-	for i in triangles.size():
-		var triangle = triangles[i]
+	var points_to_process: Array[Vector3] = []
 
-		# Get the 3 vertices of the triangle
-		var a = vertices[triangle.vertices[0]]
-		var b = vertices[triangle.vertices[1]]
-		var c = vertices[triangle.vertices[2]]
+	# Process each triangle
+	for triangle in triangles:
+		for vertex_index in triangle.vertices:
+			points_to_process.push_back(vertices[vertex_index].normalized())
+
+	var displaced_points = planet_data.points_on_planet(points_to_process)
 		
-		
-		# Apply height displacement to each vertex
-		var displaced_a = planet_data.point_on_planet(a.normalized())
-		var displaced_b = planet_data.point_on_planet(b.normalized())
-		var displaced_c = planet_data.point_on_planet(c.normalized())
+	var point_index = 0
+	for triangle in triangles:
+
+		var displaced_a = displaced_points[point_index]
+		var displaced_b = displaced_points[point_index + 1]
+		var displaced_c = displaced_points[point_index + 2]
 
 		# Calculate face normal for lighting
 		var normal = (displaced_b - displaced_a).cross(displaced_c - displaced_a).normalized()
 
-		# Add vertices in reverse order (clockwise) to ensure correct face orientation
-		for j in range(3):
-			var vertex = vertices[triangle.vertices[2 - j]].normalized()
-			var displaced_vertex = planet_data.point_on_planet(vertex)
-
-			surface_tool.set_normal(normal)
-			surface_tool.add_vertex(displaced_vertex)
+		# Add vertices in reverse order - manual for now
+		surface_tool.set_normal(normal)
+		surface_tool.add_vertex(displaced_c)
+		surface_tool.set_normal(normal)
+		surface_tool.add_vertex(displaced_b)
+		surface_tool.set_normal(normal)
+		surface_tool.add_vertex(displaced_a)
+		
+		point_index += 3
 
 	surface_tool.index()
 
