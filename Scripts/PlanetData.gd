@@ -263,3 +263,8 @@ func reset_height():
 	
 	min_height = INF
 	max_height = -INF
+
+
+func smoothstep(edge0: float, edge1: float, x: float) -> float:
+	var t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0)
+	return t * t * (3.0 - 2.0 * t)
