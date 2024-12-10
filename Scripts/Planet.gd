@@ -34,16 +34,16 @@ func _on_planet_changed():
 	Handles updates when the planet data resource is changed
 	Also updates shader parameters and regenerates the planet mesh
 	"""
-	
+
 	if get_child_count() > 0:
 		var mesh = get_child(0) as PlanetMesh
 		if mesh and mesh.material_override:
 			
 			# Update shader parameters with min and max height ranges
-			mesh.material_override.set_shader_parameter("water_height", planet_data.water_height)
-			mesh.material_override.set_shader_parameter("grass_height", planet_data.grass_height)
-			mesh.material_override.set_shader_parameter("hill_height", planet_data.hill_height)
-			mesh.material_override.set_shader_parameter("mountain_height", planet_data.mountain_height)
+			# mesh.material_override.set_shader_parameter("water_height", planet_data.water_height)
+			# mesh.material_override.set_shader_parameter("grass_height", planet_data.grass_height)
+			# mesh.material_override.set_shader_parameter("hill_height", planet_data.hill_height)
+			# mesh.material_override.set_shader_parameter("mountain_height", planet_data.mountain_height)
 			# print("Min height: ", planet_data.min_height)
 			# print("Max height: ", planet_data.max_height)
 			mesh.generate_planet(planet_data)

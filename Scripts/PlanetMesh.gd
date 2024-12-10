@@ -21,7 +21,9 @@ func generate_planet(planet_data : PlanetData):
 	Parameters:
 		planet_data: Contains the parameters for planet generation (noise layers, radius, terrain heights, etc...)
 	"""
-	
+
+	# planet_data.randomise_levels()
+
 	# Reset min and max height tracking in planet data
 	planet_data.reset_height()
 

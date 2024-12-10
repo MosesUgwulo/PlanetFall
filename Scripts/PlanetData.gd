@@ -13,19 +13,14 @@ class_name PlanetData
 
 @export var use_stepped_terrain: bool = false
 
-# Height thresholds for different terrain types
-@export var water_height : float = 0.0
-@export var grass_height : float = 0.1
-@export var hill_height : float = 0.2
-@export var mountain_height : float = 0.3
-
 
 # Constants for tracking min and max height of the planet for shader parameters
 var min_height : float = INF
 var max_height : float = -INF
 
-var noise_values = []
-
+@export var num_terrain_levels: int = 4 
+@export var min_terrain_height: float = 0.0
+@export var max_terrain_height: float = 1.0
 
 func points_on_planet(points_on_sphere : Array[Vector3]) -> Array[Vector3]:
 	
@@ -44,9 +39,6 @@ func points_on_planet(points_on_sphere : Array[Vector3]) -> Array[Vector3]:
 	
 	
 	var total_elevations = calculate_total_elevations(points_on_sphere)
-
-
-	# var height = calculate_terrain_height(total_elevation)
 
 
 	return calculate_final_points(points_on_sphere, total_elevations)
@@ -77,7 +69,6 @@ func calculate_continous_terrain(points_on_sphere: Array[Vector3]) -> Array[floa
 			first_layer = calculate_noise(point)
 
 			# print("First layer: ", first_layer)
-			first_layer = calculate_terrain_height(first_layer)
 
 			# Calculate base elevation
 			base_elevation = first_layer * noise_layers[0].amplitude
@@ -111,12 +102,27 @@ func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]
 	var maxVal = -INF
 	var elevations: Array[float] = []
 
+	# Generate terrain level thresholds and heights
+	var thresholds: Array[float] = []
+	var heights: Array[float] = []
+
+
+	for i in range(num_terrain_levels):
+		var threshold = float(i + 1) / float(num_terrain_levels)
+		thresholds.push_back(threshold)
+		# print("Threshold: ", threshold)
+
+		var height = lerp(min_terrain_height, max_terrain_height, threshold)
+		heights.push_back(height)
+
+	
 	for point in points_on_sphere:
+
 		var noise_value = calculate_noise(point)
 		minVal = min(minVal, noise_value)
 		maxVal = max(maxVal, noise_value)
 
-	print("Min: ", minVal, " Max: ", maxVal)
+	# print("Min: ", minVal, " Max: ", maxVal)
 
 	for point in points_on_sphere:
 		var normalisedMagnitude = (calculate_noise(point) - minVal) / (maxVal - minVal)
@@ -125,10 +131,17 @@ func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]
 
 		var elevation = normalisedPoint.length()
 
-		if elevation <= 0.1:
-			elevations.push_back(0.0)
-		else:
-			elevations.push_back(1.0)
+		# print("elevation: ", elevation) 
+
+		# Elevation thresholds
+		var final_height = heights[0]
+		for i in range(thresholds.size()):
+			if elevation <= thresholds[i]:
+				final_height = heights[i]
+				# print("final_height: ", final_height)
+				break
+		
+		elevations.push_back(final_height)
 	
 	
 	return elevations
@@ -182,20 +195,7 @@ func calculate_layer_elevation(point_on_sphere: Vector3, layer_index: int, first
 
 	return noise_val
 
-
-
-func calculate_terrain_height(total_elevation: float) -> float:
-	"""
-	Converts the total elevation to a terrain height value
-	"""
 	
-	total_elevation = snapped(total_elevation, 0.2)
-	# print("Total elevation: ", total_elevation)
-
-	return total_elevation
-	
-	
-
 
 func calculate_final_points(points_on_sphere: Array[Vector3], heights: Array[float]) -> Array[Vector3]:
 	"""
@@ -263,4 +263,3 @@ func reset_height():
 	
 	min_height = INF
 	max_height = -INF
-	
