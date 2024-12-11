@@ -5,6 +5,9 @@ class_name PlanetData
 # Array of noise layers used to generate the terrain
 @export var noise_layers : Array[PlanetNoise] : set = set_noise_layers
 
+# Array of biomes used to generate the terrain
+@export var biome : PlanetBiome : set = set_biome
+
 # Base radius of the planet
 @export var radius : float = 1.0 : set = set_radius
 
@@ -18,6 +21,8 @@ class_name PlanetData
 var min_height : float = INF
 var max_height : float = -INF
 
+# TODO: Implement randomization for these values
+@export_group("Terrain")
 @export var num_terrain_levels: int = 4 
 @export var min_terrain_height: float = 0.0
 @export var max_terrain_height: float = 1.0
@@ -208,20 +213,22 @@ func calculate_final_points(points_on_sphere: Array[Vector3], heights: Array[flo
 		var point = points_on_sphere[i]
 		var height = heights[i]
 
-		var elevation_mult = 1.0 + (height * 0.5)
+		# var elevation_mult = 1.0 + (height * 0.5)
 
-		var final_point = point * radius * elevation_mult
+		# var final_point = point * radius * elevation_mult
 
-		var max_radius = radius * (1.0 + 0.5)
+		# var max_radius = radius * (1.0 + 0.5)
 
-		var normalised_point = final_point * (1.0 / max_radius)
+		# var normalised_point = final_point * (1.0 / max_radius)
 
-		var scaled_radius = normalised_point * radius
+		# var scaled_radius = normalised_point * radius#
+
+		var final_point = point * radius * (1.0 + height)
  
-		min_height = min(min_height, scaled_radius.length())
-		max_height = max(max_height, scaled_radius.length())
+		min_height = min(min_height, final_point.length())
+		max_height = max(max_height, final_point.length())
 
-		final_points.push_back(scaled_radius)
+		final_points.push_back(final_point)
 
 	return final_points
 
@@ -237,8 +244,17 @@ func set_noise_layers(value):
 	emit_signal("changed")
 
 	for noise_layer in noise_layers:
-		if noise_layer != null and not noise_layer.is_connected("changed", _on_noise_changed):
-			noise_layer.connect("changed", _on_noise_changed)
+		if noise_layer != null and not noise_layer.is_connected("changed", _on_data_changed):
+			noise_layer.connect("changed", _on_data_changed)
+
+
+func set_biome(value):
+
+	biome = value
+	emit_signal("changed")
+
+	if biome != null and not biome.is_connected("changed", _on_data_changed):
+		biome.connect("changed", _on_data_changed)
 
 
 func set_radius(value):
@@ -251,7 +267,7 @@ func set_subdivisions(value):
 	emit_signal("changed")
 
 
-func _on_noise_changed():
+func _on_data_changed():
 	emit_signal("changed")
 
 
