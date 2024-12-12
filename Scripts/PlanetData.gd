@@ -26,6 +26,8 @@ var max_height : float = -INF
 @export var num_terrain_levels: int = 4 
 @export var min_terrain_height: float = 0.0
 @export var max_terrain_height: float = 1.0
+# @export var unit_height 
+
 
 func points_on_planet(points_on_sphere : Array[Vector3]) -> Array[Vector3]:
 	
@@ -212,21 +214,14 @@ func calculate_final_points(points_on_sphere: Array[Vector3], heights: Array[flo
 	for i in range(points_on_sphere.size()):
 		var point = points_on_sphere[i]
 		var height = heights[i]
-
-		# var elevation_mult = 1.0 + (height * 0.5)
-
-		# var final_point = point * radius * elevation_mult
-
-		# var max_radius = radius * (1.0 + 0.5)
-
-		# var normalised_point = final_point * (1.0 / max_radius)
-
-		# var scaled_radius = normalised_point * radius#
-
+		
 		var final_point = point * radius * (1.0 + height)
+
+		var base_radius = point * radius
+		var height_difference = final_point.length() - base_radius.length()
  
-		min_height = min(min_height, final_point.length())
-		max_height = max(max_height, final_point.length())
+		min_height = min(min_height, height_difference)
+		max_height = max(max_height, height_difference)
 
 		final_points.push_back(final_point)
 
@@ -284,3 +279,4 @@ func reset_height():
 func smoothstep(edge0: float, edge1: float, x: float) -> float:
 	var t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0)
 	return t * t * (3.0 - 2.0 * t)
+

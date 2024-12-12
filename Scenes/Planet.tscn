@@ -6,7 +6,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eix63"]
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_12ksc"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_jcxxo"]
 _surfaces = [{
 "aabb": AABB(-10, -8.82837, -9.97607, 19.4782, 17.5256, 19.6147),
 "format": 34359742471,
@@ -21,8 +21,9 @@ _surfaces = [{
 [node name="Planet" type="Node3D"]
 script = ExtResource("1_rnhuu")
 planet_data = ExtResource("2_r348q")
+noise_seed = null
 
 [node name="PlanetMesh" type="MeshInstance3D" parent="."]
 material_override = SubResource("ShaderMaterial_eix63")
-mesh = SubResource("ArrayMesh_12ksc")
+mesh = SubResource("ArrayMesh_jcxxo")
 script = ExtResource("3_vo7hh")

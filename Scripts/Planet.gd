@@ -3,6 +3,7 @@ extends Node
 
 # Reference to the planet data resource
 @export var planet_data : PlanetData : set = set_planet_data
+@export var noise_seed : int = 0
 
 func set_planet_data(value):
 
@@ -20,6 +21,22 @@ func set_planet_data(value):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if not Engine.is_editor_hint():
+		if planet_data and planet_data.noise_layers.size() > 0 and planet_data.noise_layers[0].noise:
+
+			planet_data.noise_layers[0].noise.seed = noise_seed
+
+			var rng = RandomNumberGenerator.new()
+			rng.seed = noise_seed
+
+			planet_data.num_terrain_levels = rng.randi_range(4, 8)
+			planet_data.max_terrain_height = rng.randf_range(1.0, 3.0)
+			planet_data.noise_layers[0].noise.fractal_weighted_strength = rng.randf_range(0.0, 1.0)
+			planet_data.noise_layers[0].noise.fractal_octaves = rng.randi_range(1, 10)
+			planet_data.noise_layers[0].noise.fractal_lacunarity = rng.randf_range(-3.0, 3.0)
+			planet_data.noise_layers[0].noise.fractal_gain = rng.randf_range(0.0, 1.0)
+			planet_data.subdivisions = rng.randi_range(4, 6)
+	
 	_on_planet_changed()
 
 
@@ -39,12 +56,16 @@ func _on_planet_changed():
 		var mesh = get_child(0) as PlanetMesh
 		if mesh and mesh.material_override:
 			
-			# Update shader parameters with min and max height ranges
-			# mesh.material_override.set_shader_parameter("water_height", planet_data.water_height)
-			# mesh.material_override.set_shader_parameter("grass_height", planet_data.grass_height)
-			# mesh.material_override.set_shader_parameter("hill_height", planet_data.hill_height)
-			# mesh.material_override.set_shader_parameter("mountain_height", planet_data.mountain_height)
 			print("Min height: ", planet_data.min_height)
 			print("Max height: ", planet_data.max_height)
+
+			print("Num terrain levels: ", planet_data.num_terrain_levels)
+			print("Max terrain height: ", planet_data.max_terrain_height)
+			print("Fractal weighted strength: ", planet_data.noise_layers[0].noise.fractal_weighted_strength)
+			print("Fractal octaves: ", planet_data.noise_layers[0].noise.fractal_octaves)
+			print("Fractal lacunarity: ", planet_data.noise_layers[0].noise.fractal_lacunarity)
+			print("Fractal gain: ", planet_data.noise_layers[0].noise.fractal_gain)
+			print("Subdivisions: ", planet_data.subdivisions)
+
 			mesh.generate_planet(planet_data)
 
