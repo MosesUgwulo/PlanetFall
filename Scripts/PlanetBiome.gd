@@ -2,13 +2,13 @@
 extends Resource
 class_name PlanetBiome
 
-@export var gradient: GradientTexture1D : set = set_gradient
+@export var gradientTexture: GradientTexture1D : set = set_gradient
 
 func set_gradient(value):
-    gradient = value
+    gradientTexture = value
     emit_signal("changed")
-    if gradient != null and not gradient.is_connected("changed", _on_data_changed):
-        gradient.connect("changed", _on_data_changed)
+    if gradientTexture != null and not gradientTexture.is_connected("changed", _on_data_changed):
+        gradientTexture.connect("changed", _on_data_changed)
 
 
 func _on_data_changed():
