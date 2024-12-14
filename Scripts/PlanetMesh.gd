@@ -130,15 +130,17 @@ func generate_mesh(planet_data : PlanetData):
 
 	surface_tool.index()
 
-	# Update shader parameters with min and max height ranges
-	if material_override:
-		material_override.set_shader_parameter("min_height", planet_data.min_height)
-		material_override.set_shader_parameter("max_height", planet_data.max_height)
-
 	# Create the final mesh
 	var t = MeshDataTool.new()
 	t.create_from_surface(surface_tool.commit(), 0)
 	self.mesh = surface_tool.commit()
+
+	# Update shader parameters with min and max height ranges
+	if material_override:
+		material_override.set_shader_parameter("min_height", planet_data.min_height)
+		material_override.set_shader_parameter("max_height", planet_data.max_height)
+		material_override.set_shader_parameter("radius", planet_data.radius)
+
 
 
 func subdivide_icosphere(planet_data : PlanetData):

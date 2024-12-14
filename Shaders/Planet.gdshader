@@ -1,41 +1,21 @@
 shader_type spatial;
 
-uniform vec4 water : source_color;
-uniform vec4 grass : source_color;
-uniform vec4 hill : source_color;
-uniform vec4 mountain : source_color;
+uniform float min_height;
+uniform float max_height;
+uniform float radius;
 
-uniform float water_height : hint_range(0.0, 1.0);
-uniform float grass_height : hint_range(0.0, 1.0);
-uniform float hill_height : hint_range(0.0, 1.0);
-uniform float mountain_height : hint_range(0.0, 1.0);
-
-uniform float min_height = 0.0;
-uniform float max_height = 1.0;
-
-varying float height;
+varying float height_diff;
 
 void vertex() {
-	float a = length(VERTEX);
-	height = (a - min_height) / (max_height - min_height);
-	UV = vec2(VERTEX.x + VERTEX.z, VERTEX.y + VERTEX.z);
+	float base_radius = length(normalize(VERTEX) * radius);
+
+	height_diff = length(VERTEX) - base_radius;
 }
 
 void fragment() {
-	float ratio = height;
-	vec4 tex;
-
-	if (ratio < water_height) {
-		tex = water;
-	} else if (ratio < grass_height) {
-		tex = grass;
-	} else if (ratio < hill_height) {
-		tex = hill;
-	} else {
-		tex = mountain;
-	}
-
-	ALBEDO = tex.rgb;
+	float t = (height_diff - min_height) / (max_height - min_height);
+	
+	ALBEDO = vec3(t);
 }
 
 //void light() {

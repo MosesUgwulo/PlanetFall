@@ -33,9 +33,11 @@ func _ready():
 			planet_data.max_terrain_height = rng.randf_range(1.0, 3.0)
 			planet_data.noise_layers[0].noise.fractal_weighted_strength = rng.randf_range(0.0, 1.0)
 			planet_data.noise_layers[0].noise.fractal_octaves = rng.randi_range(1, 10)
-			planet_data.noise_layers[0].noise.fractal_lacunarity = rng.randf_range(-3.0, 3.0)
+			planet_data.noise_layers[0].noise.fractal_lacunarity = rng.randf_range(-1.0, 1.0)
 			planet_data.noise_layers[0].noise.fractal_gain = rng.randf_range(0.0, 1.0)
-			planet_data.subdivisions = rng.randi_range(4, 6)
+			planet_data.subdivisions = rng.randi_range(5, 6)
+			planet_data.noise_layers[0].scale_factor = rng.randf_range(50, 100)
+			planet_data.noise_layers[0].noise.frequency = rng.randf_range(0.01, 0.02)
 	
 	_on_planet_changed()
 
@@ -58,14 +60,16 @@ func _on_planet_changed():
 			
 			print("Min height: ", planet_data.min_height)
 			print("Max height: ", planet_data.max_height)
-
-			print("Num terrain levels: ", planet_data.num_terrain_levels)
-			print("Max terrain height: ", planet_data.max_terrain_height)
-			print("Fractal weighted strength: ", planet_data.noise_layers[0].noise.fractal_weighted_strength)
-			print("Fractal octaves: ", planet_data.noise_layers[0].noise.fractal_octaves)
-			print("Fractal lacunarity: ", planet_data.noise_layers[0].noise.fractal_lacunarity)
-			print("Fractal gain: ", planet_data.noise_layers[0].noise.fractal_gain)
-			print("Subdivisions: ", planet_data.subdivisions)
+			# print("=====================================")
+			# print("Num terrain levels: ", planet_data.num_terrain_levels)
+			# print("Max terrain height: ", planet_data.max_terrain_height)
+			# print("Fractal weighted strength: ", planet_data.noise_layers[0].noise.fractal_weighted_strength)
+			# print("Fractal octaves: ", planet_data.noise_layers[0].noise.fractal_octaves)
+			# print("Fractal lacunarity: ", planet_data.noise_layers[0].noise.fractal_lacunarity)
+			# print("Fractal gain: ", planet_data.noise_layers[0].noise.fractal_gain)
+			# print("Subdivisions: ", planet_data.subdivisions)
+			# print("Scale factor: ", planet_data.noise_layers[0].scale_factor)
+			# print("Frequency: ", planet_data.noise_layers[0].noise.frequency)
 
 			mesh.generate_planet(planet_data)
 

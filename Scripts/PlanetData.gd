@@ -219,6 +219,7 @@ func calculate_final_points(points_on_sphere: Array[Vector3], heights: Array[flo
 
 		var base_radius = point * radius
 		var height_difference = final_point.length() - base_radius.length()
+		# print("Height difference: ", height_difference)
  
 		min_height = min(min_height, height_difference)
 		max_height = max(max_height, height_difference)
