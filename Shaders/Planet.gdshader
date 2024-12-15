@@ -3,6 +3,7 @@ shader_type spatial;
 uniform float min_height;
 uniform float max_height;
 uniform float radius;
+uniform sampler2D height_colour : repeat_disable;
 
 varying float height_diff;
 
@@ -15,7 +16,10 @@ void vertex() {
 void fragment() {
 	float t = (height_diff - min_height) / (max_height - min_height);
 	
-	ALBEDO = vec3(t);
+	t = clamp(t, 0.0, 1.0);
+
+	ALBEDO = texture(height_colour, vec2(t)).rgb;
+	// ALBEDO = vec3(t);
 }
 
 //void light() {

@@ -1,9 +1,14 @@
-[gd_scene load_steps=7 format=4 uid="uid://cfko1j3mivho4"]
+[gd_scene load_steps=9 format=4 uid="uid://cfko1j3mivho4"]
 
 [ext_resource type="Script" path="res://Scripts/Planet.gd" id="1_rnhuu"]
 [ext_resource type="Resource" uid="uid://dqfv38cguw26g" path="res://Assets/Planet.tres" id="2_r348q"]
 [ext_resource type="Shader" path="res://Shaders/Planet.gdshader" id="3_cchcw"]
 [ext_resource type="Script" path="res://Scripts/PlanetMesh.gd" id="3_vo7hh"]
+
+[sub_resource type="Gradient" id="Gradient_7137o"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xf0as"]
+gradient = SubResource("Gradient_7137o")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eix63"]
 render_priority = 0
@@ -11,8 +16,9 @@ shader = ExtResource("3_cchcw")
 shader_parameter/min_height = 1.25
 shader_parameter/max_height = 5.0
 shader_parameter/radius = 5.0
+shader_parameter/height_colour = SubResource("GradientTexture1D_xf0as")
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_7ljox"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_y8xll"]
 _surfaces = [{
 "aabb": AABB(-10, -8.82837, -9.97607, 19.4782, 17.5256, 19.6147),
 "format": 34359742471,
@@ -30,5 +36,5 @@ planet_data = ExtResource("2_r348q")
 
 [node name="PlanetMesh" type="MeshInstance3D" parent="."]
 material_override = SubResource("ShaderMaterial_eix63")
-mesh = SubResource("ArrayMesh_7ljox")
+mesh = SubResource("ArrayMesh_y8xll")
 script = ExtResource("3_vo7hh")

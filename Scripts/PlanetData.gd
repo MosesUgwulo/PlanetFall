@@ -150,6 +150,7 @@ func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]
 		
 		elevations.push_back(final_height)
 	
+
 	
 	return elevations
 	
@@ -162,8 +163,9 @@ func calculate_noise(point_on_sphere: Vector3) -> float:
 	"""
 	var sample_point = point_on_sphere * noise_layers[0].scale_factor
 	var first_noise = noise_layers[0].noise.get_noise_3dv(sample_point)
-
-		# convert noise value to range [0, 1]
+	
+	
+	# convert noise value to range [0, 1]
 	return (first_noise + 1.0) * 0.5
 
 
@@ -219,6 +221,7 @@ func calculate_final_points(points_on_sphere: Array[Vector3], heights: Array[flo
 
 		var base_radius = point * radius
 		var height_difference = final_point.length() - base_radius.length()
+
 		# print("Height difference: ", height_difference)
  
 		min_height = min(min_height, height_difference)
