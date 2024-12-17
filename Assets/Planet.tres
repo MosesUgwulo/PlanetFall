@@ -4,10 +4,12 @@
 [ext_resource type="Script" path="res://Scripts/PlanetNoise.gd" id="1_arb3o"]
 [ext_resource type="Script" path="res://Scripts/PlanetData.gd" id="2_3b8vj"]
 
-[sub_resource type="Gradient" id="Gradient_7137o"]
+[sub_resource type="Gradient" id="Gradient_mio2y"]
+offsets = PackedFloat32Array(0, 0.25, 0.5, 0.75)
+colors = PackedColorArray(0.653539, 0.165597, 0.688432, 1, 0.84167, 0.0246786, 0.188381, 1, 0.650293, 0.385666, 0.188378, 1, 0.287255, 0.201319, 0.518717, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_xf0as"]
-gradient = SubResource("Gradient_7137o")
+gradient = SubResource("Gradient_mio2y")
 
 [sub_resource type="Resource" id="Resource_k4icb"]
 script = ExtResource("1_5fa3i")

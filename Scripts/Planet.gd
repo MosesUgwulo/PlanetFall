@@ -58,8 +58,8 @@ func _on_planet_changed():
 		var mesh = get_child(0) as PlanetMesh
 		if mesh and mesh.material_override:
 			
-			print("Min height: ", planet_data.min_height)
-			print("Max height: ", planet_data.max_height)
+			# print("Min height: ", planet_data.min_height)
+			# print("Max height: ", planet_data.max_height)
 			# print("=====================================")
 			# print("Num terrain levels: ", planet_data.num_terrain_levels)
 			# print("Max terrain height: ", planet_data.max_terrain_height)

@@ -117,11 +117,32 @@ func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]
 	for i in range(num_terrain_levels):
 		var threshold = float(i + 1) / float(num_terrain_levels)
 		thresholds.push_back(threshold)
-		# print("Threshold: ", threshold)
 
+		
 		var height = lerp(min_terrain_height, max_terrain_height, threshold)
 		heights.push_back(height)
 
+	# Code here for gradients
+
+	if biome and biome.gradientTexture:
+		var gradient = biome.gradientTexture.gradient
+
+		while gradient.get_point_count() > 1:
+			gradient.remove_point(1)
+
+		var rng = RandomNumberGenerator.new()
+		rng.randomize()
+
+		var first_colour = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1), 1.0)
+		gradient.set_color(0, first_colour)
+
+		for i in range(thresholds.size() - 1):
+			var threshold = thresholds[i]
+
+			var random_colour = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1), 1.0)
+			gradient.add_point(threshold, random_colour)
+
+	# print("Threshold: ", thresholds)
 	
 	for point in points_on_sphere:
 
@@ -149,7 +170,8 @@ func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]
 				break
 		
 		elevations.push_back(final_height)
-	
+
+
 
 	
 	return elevations
@@ -251,7 +273,9 @@ func set_biome(value):
 
 	biome = value
 	emit_signal("changed")
-
+	if biome == null:
+		biome = PlanetBiome.new()
+	
 	if biome != null and not biome.is_connected("changed", _on_data_changed):
 		biome.connect("changed", _on_data_changed)
 

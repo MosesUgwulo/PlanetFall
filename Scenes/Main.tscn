@@ -29,4 +29,4 @@ transform = Transform3D(1, 0, 0, 0, 0.632922, 0.774216, 0, -0.774216, 0.632922, 
 current = true
 
 [node name="Planet" parent="." instance=ExtResource("2_stmvw")]
-noise_seed = 325
+noise_seed = 4764346
