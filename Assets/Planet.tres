@@ -1,19 +1,30 @@
-[gd_resource type="Resource" script_class="PlanetData" load_steps=9 format=3 uid="uid://dqfv38cguw26g"]
+[gd_resource type="Resource" script_class="PlanetData" load_steps=12 format=3 uid="uid://dqfv38cguw26g"]
 
 [ext_resource type="Script" path="res://Scripts/PlanetBiome.gd" id="1_5fa3i"]
 [ext_resource type="Script" path="res://Scripts/PlanetNoise.gd" id="1_arb3o"]
 [ext_resource type="Script" path="res://Scripts/PlanetData.gd" id="2_3b8vj"]
 
-[sub_resource type="Gradient" id="Gradient_mio2y"]
-offsets = PackedFloat32Array(0, 0.25, 0.5, 0.75)
-colors = PackedColorArray(0.653539, 0.165597, 0.688432, 1, 0.84167, 0.0246786, 0.188381, 1, 0.650293, 0.385666, 0.188378, 1, 0.287255, 0.201319, 0.518717, 1)
+[sub_resource type="Gradient" id="Gradient_77at0"]
+colors = PackedColorArray(0, 1, 0, 1, 1, 0, 0, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_xf0as"]
-gradient = SubResource("Gradient_mio2y")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_1h6wx"]
+gradient = SubResource("Gradient_77at0")
 
-[sub_resource type="Resource" id="Resource_k4icb"]
+[sub_resource type="Resource" id="Resource_ng8ax"]
 script = ExtResource("1_5fa3i")
-gradientTexture = SubResource("GradientTexture1D_xf0as")
+gradientTexture = SubResource("GradientTexture1D_1h6wx")
+start_height = 0.0
+
+[sub_resource type="Gradient" id="Gradient_7odt1"]
+colors = PackedColorArray(1, 0.0738182, 0.739958, 1, 0, 0, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_r8p5u"]
+gradient = SubResource("Gradient_7odt1")
+
+[sub_resource type="Resource" id="Resource_qbe5e"]
+script = ExtResource("1_5fa3i")
+gradientTexture = SubResource("GradientTexture1D_r8p5u")
+start_height = 0.0
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_v5x7d"]
 
@@ -29,8 +40,8 @@ scale_factor = 100.0
 [resource]
 script = ExtResource("2_3b8vj")
 noise_layers = Array[ExtResource("1_arb3o")]([SubResource("Resource_nlsbj")])
-biome = SubResource("Resource_k4icb")
-radius = 5.0
+biomes = Array[ExtResource("1_5fa3i")]([SubResource("Resource_ng8ax"), SubResource("Resource_qbe5e")])
+radius = 4.76
 subdivisions = 4.0
 use_stepped_terrain = true
 num_terrain_levels = 4

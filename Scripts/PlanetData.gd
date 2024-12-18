@@ -6,7 +6,7 @@ class_name PlanetData
 @export var noise_layers : Array[PlanetNoise] : set = set_noise_layers
 
 # Array of biomes used to generate the terrain
-@export var biome : PlanetBiome : set = set_biome
+@export var biomes : Array[PlanetBiome] : set = set_biomes
 
 # Base radius of the planet
 @export var radius : float = 1.0 : set = set_radius
@@ -21,12 +21,12 @@ class_name PlanetData
 var min_height : float = INF
 var max_height : float = -INF
 
-# TODO: Implement randomization for these values
+
 @export_group("Terrain")
 @export var num_terrain_levels: int = 4 
 @export var min_terrain_height: float = 0.0
 @export var max_terrain_height: float = 1.0
-# @export var unit_height 
+
 
 
 func points_on_planet(points_on_sphere : Array[Vector3]) -> Array[Vector3]:
@@ -122,27 +122,8 @@ func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]
 		var height = lerp(min_terrain_height, max_terrain_height, threshold)
 		heights.push_back(height)
 
-	# Code here for gradients
 
-	if biome and biome.gradientTexture:
-		var gradient = biome.gradientTexture.gradient
-
-		while gradient.get_point_count() > 1:
-			gradient.remove_point(1)
-
-		var rng = RandomNumberGenerator.new()
-		rng.randomize()
-
-		var first_colour = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1), 1.0)
-		gradient.set_color(0, first_colour)
-
-		for i in range(thresholds.size() - 1):
-			var threshold = thresholds[i]
-
-			var random_colour = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1), 1.0)
-			gradient.add_point(threshold, random_colour)
-
-	# print("Threshold: ", thresholds)
+	# generate_gradient_colors_for_terrain_levels(thresholds, noise_layers[0].noise.seed)
 	
 	for point in points_on_sphere:
 
@@ -150,7 +131,7 @@ func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]
 		minVal = min(minVal, noise_value)
 		maxVal = max(maxVal, noise_value)
 
-	# print("Min: ", minVal, " Max: ", maxVal)
+	
 
 	for point in points_on_sphere:
 		var normalisedMagnitude = (calculate_noise(point) - minVal) / (maxVal - minVal)
@@ -159,7 +140,7 @@ func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]
 
 		var elevation = normalisedPoint.length()
 
-		# print("elevation: ", elevation) 
+		# print("elevation: ", elevation)
 
 		# Elevation thresholds
 		var final_height = heights[0]
@@ -171,11 +152,7 @@ func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]
 		
 		elevations.push_back(final_height)
 
-
-
-	
 	return elevations
-	
 
 
 
@@ -255,6 +232,50 @@ func calculate_final_points(points_on_sphere: Array[Vector3], heights: Array[flo
 
 
 
+# func generate_gradient_colors_for_terrain_levels(thresholds: Array[float], noise_seed: int) -> void:
+# 	if biome and biome.gradientTexture:
+# 		var gradient = biome.gradientTexture.gradient
+
+# 		while gradient.get_point_count() > 1:
+# 			gradient.remove_point(1)
+
+# 		var rng = RandomNumberGenerator.new()
+# 		rng.seed = noise_seed
+
+# 		var first_colour = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1), 1.0)
+# 		gradient.set_color(0, first_colour)
+
+# 		for i in range(thresholds.size() - 1):
+# 			var threshold = thresholds[i]
+
+# 			var random_colour = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1), 1.0)
+# 			gradient.add_point(threshold, random_colour)
+
+
+func update_biome_texture() -> ImageTexture:
+	var image_texture = ImageTexture.new()
+	var dynamic_image = Image.new()
+	var height : int = biomes.size()
+
+	if biomes.size() > 0 and biomes[0] != null and biomes[0].gradientTexture != null:
+		
+		if height > 0:
+			var data: PackedByteArray = []
+			var width: int = biomes[0].gradientTexture.get_width()
+			
+			for biome in biomes:
+				data.append_array(biome.gradientTexture.get_image().get_data())
+
+			dynamic_image = Image.create_from_data(width, height, false, Image.FORMAT_RGBA8, data)
+			image_texture.set_image(dynamic_image)
+			image_texture.resource_name = "GradientTexture"
+		
+		return image_texture
+
+	return image_texture
+
+
+
 func set_noise_layers(value):
 
 	"""
@@ -269,15 +290,19 @@ func set_noise_layers(value):
 			noise_layer.connect("changed", _on_data_changed)
 
 
-func set_biome(value):
+func set_biomes(value):
 
-	biome = value
+	biomes = value
 	emit_signal("changed")
-	if biome == null:
-		biome = PlanetBiome.new()
 	
-	if biome != null and not biome.is_connected("changed", _on_data_changed):
-		biome.connect("changed", _on_data_changed)
+	for biome in biomes:
+		if biome == null:
+			PlanetBiome.new()
+			
+	
+	for biome in biomes:
+		if biome != null and not biome.is_connected("changed", _on_data_changed):
+			biome.connect("changed", _on_data_changed)
 
 
 func set_radius(value):

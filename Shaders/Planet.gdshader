@@ -18,8 +18,7 @@ void fragment() {
 	
 	t = clamp(t, 0.0, 1.0);
 
-	ALBEDO = texture(height_colour, vec2(t)).rgb;
-	// ALBEDO = vec3(t);
+	ALBEDO = texture(height_colour, vec2(t, 0.5)).rgb;
 }
 
 //void light() {

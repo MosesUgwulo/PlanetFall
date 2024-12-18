@@ -141,8 +141,8 @@ func generate_mesh(planet_data : PlanetData):
 		material_override.set_shader_parameter("max_height", planet_data.max_height)
 		material_override.set_shader_parameter("radius", planet_data.radius)
 
-		if planet_data.biome and planet_data.biome.gradientTexture:
-			material_override.set_shader_parameter("height_colour", planet_data.biome.gradientTexture)
+		
+		material_override.set_shader_parameter("height_colour", planet_data.update_biome_texture())
 
 
 
