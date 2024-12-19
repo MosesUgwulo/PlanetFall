@@ -1,8 +1,10 @@
-[gd_resource type="Resource" script_class="PlanetData" load_steps=12 format=3 uid="uid://dqfv38cguw26g"]
+[gd_resource type="Resource" script_class="PlanetData" load_steps=13 format=3 uid="uid://dqfv38cguw26g"]
 
 [ext_resource type="Script" path="res://Scripts/PlanetBiome.gd" id="1_5fa3i"]
 [ext_resource type="Script" path="res://Scripts/PlanetNoise.gd" id="1_arb3o"]
 [ext_resource type="Script" path="res://Scripts/PlanetData.gd" id="2_3b8vj"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_mwby2"]
 
 [sub_resource type="Gradient" id="Gradient_77at0"]
 colors = PackedColorArray(0, 1, 0, 1, 1, 0, 0, 1)
@@ -15,16 +17,16 @@ script = ExtResource("1_5fa3i")
 gradientTexture = SubResource("GradientTexture1D_1h6wx")
 start_height = 0.0
 
-[sub_resource type="Gradient" id="Gradient_7odt1"]
-colors = PackedColorArray(1, 0.0738182, 0.739958, 1, 0, 0, 1, 1)
+[sub_resource type="Gradient" id="Gradient_00yib"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_r8p5u"]
-gradient = SubResource("Gradient_7odt1")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_1ww0v"]
+gradient = SubResource("Gradient_00yib")
 
-[sub_resource type="Resource" id="Resource_qbe5e"]
+[sub_resource type="Resource" id="Resource_ywped"]
 script = ExtResource("1_5fa3i")
-gradientTexture = SubResource("GradientTexture1D_r8p5u")
-start_height = 0.0
+gradientTexture = SubResource("GradientTexture1D_1ww0v")
+start_height = 0.7
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_v5x7d"]
 
@@ -40,10 +42,14 @@ scale_factor = 100.0
 [resource]
 script = ExtResource("2_3b8vj")
 noise_layers = Array[ExtResource("1_arb3o")]([SubResource("Resource_nlsbj")])
-biomes = Array[ExtResource("1_5fa3i")]([SubResource("Resource_ng8ax"), SubResource("Resource_qbe5e")])
-radius = 4.76
-subdivisions = 4.0
+radius = 5.0
+subdivisions = 6.0
 use_stepped_terrain = true
+biomes = Array[ExtResource("1_5fa3i")]([SubResource("Resource_ng8ax"), SubResource("Resource_ywped")])
+biome_noise = SubResource("FastNoiseLite_mwby2")
+biome_amplitude = 0.44
+biome_offset = 0.8
+biome_blend = 1.0
 num_terrain_levels = 4
 min_terrain_height = 0.0
 max_terrain_height = 1.0

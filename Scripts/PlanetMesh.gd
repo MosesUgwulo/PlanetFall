@@ -107,6 +107,7 @@ func generate_mesh(planet_data : PlanetData):
 			points_to_process.push_back(vertices[vertex_index].normalized())
 
 	var displaced_points = planet_data.points_on_planet(points_to_process)
+	var biome_percents = planet_data.biome_at_height(points_to_process)
 		
 	var point_index = 0
 	for triangle in triangles:
@@ -120,10 +121,15 @@ func generate_mesh(planet_data : PlanetData):
 
 		# Add vertices in reverse order - manual for now
 		surface_tool.set_normal(normal)
+		surface_tool.set_uv(Vector2(0.0, biome_percents[point_index + 2]))
 		surface_tool.add_vertex(displaced_c)
+
 		surface_tool.set_normal(normal)
+		surface_tool.set_uv(Vector2(0.0, biome_percents[point_index + 1]))
 		surface_tool.add_vertex(displaced_b)
+
 		surface_tool.set_normal(normal)
+		surface_tool.set_uv(Vector2(0.0, biome_percents[point_index]))
 		surface_tool.add_vertex(displaced_a)
 		
 		point_index += 3

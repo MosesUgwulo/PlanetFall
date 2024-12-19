@@ -5,9 +5,6 @@ class_name PlanetData
 # Array of noise layers used to generate the terrain
 @export var noise_layers : Array[PlanetNoise] : set = set_noise_layers
 
-# Array of biomes used to generate the terrain
-@export var biomes : Array[PlanetBiome] : set = set_biomes
-
 # Base radius of the planet
 @export var radius : float = 1.0 : set = set_radius
 
@@ -20,6 +17,15 @@ class_name PlanetData
 # Constants for tracking min and max height of the planet for shader parameters
 var min_height : float = INF
 var max_height : float = -INF
+
+
+# Array of biomes used to generate the terrain
+@export_group("Biomes")
+@export var biomes : Array[PlanetBiome] : set = set_biomes
+@export var biome_noise : FastNoiseLite : set = set_biome_noise
+@export var biome_amplitude : float = 1.0 : set = set_biome_amplitude
+@export var biome_offset : float = 1.0 : set = set_biome_offset
+@export_range(0.0, 1.0) var biome_blend : float = 1.0 : set = set_biome_blend
 
 
 @export_group("Terrain")
@@ -168,6 +174,18 @@ func calculate_noise(point_on_sphere: Vector3) -> float:
 	return (first_noise + 1.0) * 0.5
 
 
+func calculate_biome_noise(point_on_sphere: Vector3) -> float:
+	"""
+	Calculates the biome noise value
+	"""
+	if biome_noise == null:
+		return 0.0
+	var sample_point = point_on_sphere * 100.0
+	var biome_noise_val = biome_noise.get_noise_3dv(sample_point)
+	
+	# convert noise value to range [0, 1]
+	return (biome_noise_val + 1.0) * 0.5
+
 
 func calculate_layer_elevation(point_on_sphere: Vector3, layer_index: int, first_layer: float, base_elevation: float) -> float:
 
@@ -264,7 +282,12 @@ func update_biome_texture() -> ImageTexture:
 			var width: int = biomes[0].gradientTexture.get_width()
 			
 			for biome in biomes:
-				data.append_array(biome.gradientTexture.get_image().get_data())
+
+				if biome == null or biome.gradientTexture == null:
+					continue
+				
+				var image = biome.gradientTexture.get_image()
+				data.append_array(image.get_data())
 
 			dynamic_image = Image.create_from_data(width, height, false, Image.FORMAT_RGBA8, data)
 			image_texture.set_image(dynamic_image)
@@ -273,6 +296,37 @@ func update_biome_texture() -> ImageTexture:
 		return image_texture
 
 	return image_texture
+
+
+
+func biome_at_height(points_on_sphere : Array[Vector3]) -> Array[float]:
+	var biome_percent : Array[float] = []
+
+	if biomes.size() == 0:
+		return biome_percent
+
+	for point in points_on_sphere:
+		var height_percent : float = (point.y + 1.0) / 2.0
+
+		var noise_value = calculate_biome_noise(point)
+		height_percent += (noise_value - biome_offset) * biome_amplitude
+
+		var num_biomes : float = biomes.size()
+		var biome_index : float = 0.0
+		var blend_range : float = biome_blend / 2.0 + 0.0001
+
+		for i in range(num_biomes):
+			if biomes[i] == null:
+				continue
+
+			var dst : float = height_percent - biomes[i].start_height
+			var weight = clamp(inverse_lerp(-blend_range, blend_range, dst), 0.0, 1.0)
+			biome_index *= (1.0 - weight)
+			biome_index += i * weight
+		
+		biome_percent.push_back(biome_index / max(1.0, num_biomes - 1.0))
+	
+	return biome_percent
 
 
 
@@ -305,6 +359,29 @@ func set_biomes(value):
 			biome.connect("changed", _on_data_changed)
 
 
+func set_biome_noise(value):
+	biome_noise = value
+	emit_signal("changed")
+	
+	if biome_noise != null and not biome_noise.is_connected("changed", _on_data_changed):
+		biome_noise.connect("changed", _on_data_changed)
+
+
+func set_biome_amplitude(value):
+	biome_amplitude = value
+	emit_signal("changed")
+
+
+func set_biome_offset(value):
+	biome_offset = value
+	emit_signal("changed")
+
+
+func set_biome_blend(value):
+	biome_blend = value
+	emit_signal("changed")
+
+
 func set_radius(value):
 	radius = value
 	emit_signal("changed")
@@ -332,4 +409,3 @@ func reset_height():
 func smoothstep(edge0: float, edge1: float, x: float) -> float:
 	var t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0)
 	return t * t * (3.0 - 2.0 * t)
-
