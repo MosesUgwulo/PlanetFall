@@ -107,7 +107,7 @@ func generate_mesh(planet_data : PlanetData):
 			points_to_process.push_back(vertices[vertex_index].normalized())
 
 	var displaced_points = planet_data.points_on_planet(points_to_process)
-	var biome_percents = planet_data.biome_at_height(points_to_process)
+	var biome_percents = planet_data.get_biome_gradient_index(points_to_process)
 		
 	var point_index = 0
 	for triangle in triangles:

@@ -21,6 +21,22 @@ func set_planet_data(value):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+
+	"""
+	Initializes randomized planet data when the node is ready
+	and updates the planet mesh
+	"""
+	# _initialize_planet_data()
+
+	_on_planet_changed()
+
+
+func _initialize_planet_data():
+	
+	"""
+	Initializes randomized planet data for testing purposes
+	only if the game is not running in the editor
+	"""
 	if not Engine.is_editor_hint():
 		if planet_data and planet_data.noise_layers.size() > 0 and planet_data.noise_layers[0].noise:
 
@@ -38,29 +54,22 @@ func _ready():
 			planet_data.subdivisions = rng.randi_range(5, 6)
 			planet_data.noise_layers[0].scale_factor = rng.randf_range(50, 100)
 			planet_data.noise_layers[0].noise.frequency = rng.randf_range(0.01, 0.02)
-	
-	_on_planet_changed()
 
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	pass
 
 func _on_planet_changed():
 
 	"""
 	Handles updates when the planet data resource is changed
-	Also updates shader parameters and regenerates the planet mesh
+	and regenerates the planet mesh
 	"""
 
 	if get_child_count() > 0:
 		var mesh = get_child(0) as PlanetMesh
 		if mesh and mesh.material_override:
 			
+			# print("=====================================")
 			# print("Min height: ", planet_data.min_height)
 			# print("Max height: ", planet_data.max_height)
-			# print("=====================================")
 			# print("Num terrain levels: ", planet_data.num_terrain_levels)
 			# print("Max terrain height: ", planet_data.max_terrain_height)
 			# print("Fractal weighted strength: ", planet_data.noise_layers[0].noise.fractal_weighted_strength)
