@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://s1iim5sxtjj1"]
+[gd_scene load_steps=2 format=3 uid="uid://s1iim5sxtjj1"]
+
+[ext_resource type="Script" path="res://Scripts/canvas_layer.gd" id="1_t4jj6"]
 
 [node name="CanvasLayer" type="CanvasLayer"]
+script = ExtResource("1_t4jj6")
 
 [node name="Node3D" type="Node3D" parent="."]
 
@@ -44,3 +47,5 @@ text = "PREPARE THE TEST"
 [node name="Button3" type="Button" parent="Node3D/Buttons/MarginContainer/HBoxContainer"]
 layout_mode = 2
 text = "PREPARE THE TEST"
+
+[connection signal="pressed" from="Node3D/Buttons/MarginContainer/HBoxContainer/Button" to="." method="_press_me"]

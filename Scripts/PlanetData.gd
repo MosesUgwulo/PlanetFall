@@ -138,7 +138,7 @@ func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]
 		heights.push_back(height)
 
 	# Generate gradient colors for each terrain level
-	# generate_gradient_colors_for_terrain_levels(thresholds, noise_layers[0].noise.seed)
+	generate_gradient_colors_for_terrain_levels(thresholds, noise_layers[0].noise.seed)
 	
 	# Calculate min and max elevation values
 	for point in points_on_sphere:

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="PlanetData" load_steps=16 format=3 uid="uid://dqfv38cguw26g"]
+[gd_resource type="Resource" script_class="PlanetData" load_steps=10 format=3 uid="uid://dqfv38cguw26g"]
 
 [ext_resource type="Script" path="res://Scripts/PlanetBiome.gd" id="1_5fa3i"]
 [ext_resource type="Script" path="res://Scripts/PlanetNoise.gd" id="1_arb3o"]
@@ -10,8 +10,8 @@ domain_warp_fractal_lacunarity = 6.21
 domain_warp_fractal_gain = 0.84
 
 [sub_resource type="Gradient" id="Gradient_mrgcv"]
-offsets = PackedFloat32Array(0.0159574)
-colors = PackedColorArray(1, 0, 0, 1)
+offsets = PackedFloat32Array(0.0159574, 0.25, 0.5, 0.75)
+colors = PackedColorArray(0.202272, 0.125359, 0.358581, 1, 0.168866, 0.859284, 0.472052, 1, 0.708726, 0.518353, 0.0797473, 1, 0.231873, 0.150086, 0.990496, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_ubij4"]
 gradient = SubResource("Gradient_mrgcv")
@@ -20,30 +20,6 @@ gradient = SubResource("Gradient_mrgcv")
 script = ExtResource("1_5fa3i")
 gradientTexture = SubResource("GradientTexture1D_ubij4")
 start_height = 0.315
-
-[sub_resource type="Gradient" id="Gradient_qg838"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(0, 0, 0, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_vd8il"]
-gradient = SubResource("Gradient_qg838")
-
-[sub_resource type="Resource" id="Resource_w8l5i"]
-script = ExtResource("1_5fa3i")
-gradientTexture = SubResource("GradientTexture1D_vd8il")
-start_height = 0.385
-
-[sub_resource type="Gradient" id="Gradient_24gay"]
-offsets = PackedFloat32Array(0)
-colors = PackedColorArray(1, 1, 1, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_1l0ai"]
-gradient = SubResource("Gradient_24gay")
-
-[sub_resource type="Resource" id="Resource_g2bqv"]
-script = ExtResource("1_5fa3i")
-gradientTexture = SubResource("GradientTexture1D_1l0ai")
-start_height = 0.6
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_v5x7d"]
 
@@ -62,7 +38,7 @@ noise_layers = Array[ExtResource("1_arb3o")]([SubResource("Resource_nlsbj")])
 radius = 5.0
 subdivisions = 4.0
 use_stepped_terrain = true
-biomes = Array[ExtResource("1_5fa3i")]([SubResource("Resource_rjj2m"), SubResource("Resource_w8l5i"), SubResource("Resource_g2bqv")])
+biomes = Array[ExtResource("1_5fa3i")]([SubResource("Resource_rjj2m")])
 biome_noise = SubResource("FastNoiseLite_mwby2")
 biome_amplitude = 0.0
 biome_offset = 0.0
