@@ -59,7 +59,7 @@ scale_factor = 100.0
 [resource]
 script = ExtResource("2_3b8vj")
 noise_layers = Array[ExtResource("1_arb3o")]([SubResource("Resource_nlsbj")])
-radius = 5.005
+radius = 5.0
 subdivisions = 4.0
 use_stepped_terrain = true
 biomes = Array[ExtResource("1_5fa3i")]([SubResource("Resource_rjj2m"), SubResource("Resource_w8l5i"), SubResource("Resource_g2bqv")])
