@@ -2,34 +2,57 @@
 extends MeshInstance3D
 class_name PlanetMesh
 
-var triangles = []
-var vertices = []
+# Array to store data for the planet
+var triangles = [] # Stores triangle face data
+var vertices = [] # Stores vertex positions
+
 
 func _ready():
+	# Clears any existing mesh data when the node is ready
 	vertices.clear()
 	triangles.clear()
 	mesh = null
 
 
 func generate_planet(planet_data : PlanetData):
+
+	"""
+	Main function to generate the planet mesh using the planet data provided
+	Parameters:
+		planet_data: Contains the parameters for planet generation (noise layers, radius, terrain heights, etc...)
+	"""
+
+	# planet_data.randomise_levels()
+
+	# Reset min and max height tracking in planet data
 	planet_data.reset_height()
 
+	# Clears any existing mesh data
 	vertices.clear()
 	triangles.clear()
 	mesh = null
 
-	
-
+	# Generate the planet in three steps:
+	# 1. Generate the base icosphere
 	generate_icosphere()
+	# 2. Subdivide the icosphere for more detail
 	subdivide_icosphere(planet_data)
+	# 3. Generate the final mesh with some form of displacement based on the noise layers
 	generate_mesh(planet_data)
 
-# Generate an icosphere
+
 func generate_icosphere():
 	
+	"""
+	Creates a basic icosphere, which serves as the base shape for the planet
+	Reference: https://github.com/codatproduction/Solar-system
+	"""
+
+	# Golden ratio used for icosphere vertex calculation
 	var t = (1.0 + sqrt(5.0)) / 2.0
 
-	# Vertices
+	# Create 12 vertices of an icosahedron
+	# All vertices are normalised to create a sphere
 	vertices.push_back(Vector3(-1,  t,  0).normalized())
 	vertices.push_back(Vector3(1, t, 0).normalized())
 	vertices.push_back(Vector3(-1, -t, 0).normalized())
@@ -43,7 +66,7 @@ func generate_icosphere():
 	vertices.push_back(Vector3(-t, 0, -1).normalized())
 	vertices.push_back(Vector3(-t, 0, 1).normalized())
 	
-	# Faces
+	# Create 20 triangular faces connecting the 12 vertices
 	triangles.push_back(Triangle.new(0, 11, 5))
 	triangles.push_back(Triangle.new(0, 5, 1))
 	triangles.push_back(Triangle.new(0, 1, 7))
@@ -65,61 +88,97 @@ func generate_icosphere():
 	triangles.push_back(Triangle.new(8, 6, 7))
 	triangles.push_back(Triangle.new(9, 8, 1))
 
-# Generate a mesh from the vertices and triangles
+
 func generate_mesh(planet_data : PlanetData):
+
+	"""
+	Generates the final mesh using the vertices and triangles
+	Applies height displacement based on planet_data passed in
+	"""
 
 	var surface_tool = SurfaceTool.new()
 	surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 
-	for i in triangles.size():
-		var triangle = triangles[i]
+	var points_to_process: Array[Vector3] = []
 
-		# Calculate the face normals
-		var a = vertices[triangle.vertices[0]]
-		var b = vertices[triangle.vertices[1]]
-		var c = vertices[triangle.vertices[2]]
-		
-		
-		var displaced_a = planet_data.point_on_planet(a.normalized())
-		var displaced_b = planet_data.point_on_planet(b.normalized())
-		var displaced_c = planet_data.point_on_planet(c.normalized())
+	# Process each triangle
+	for triangle in triangles:
+		for vertex_index in triangle.vertices:
+			points_to_process.push_back(vertices[vertex_index].normalized())
 
+	var displaced_points = planet_data.points_on_planet(points_to_process)
+	var biome_percents = planet_data.get_biome_gradient_index(points_to_process)
+		
+	var point_index = 0
+	for triangle in triangles:
+
+		var displaced_a = displaced_points[point_index]
+		var displaced_b = displaced_points[point_index + 1]
+		var displaced_c = displaced_points[point_index + 2]
+
+		# Calculate face normal for lighting
 		var normal = (displaced_b - displaced_a).cross(displaced_c - displaced_a).normalized()
 
-		for j in range(3):
-			var vertex = vertices[triangle.vertices[2 - j]].normalized()
-			var displaced_vertex = planet_data.point_on_planet(vertex)
+		# Add vertices in reverse order - manual for now
+		surface_tool.set_normal(normal)
+		surface_tool.set_uv(Vector2(0.0, biome_percents[point_index + 2]))
+		surface_tool.add_vertex(displaced_c)
 
-			surface_tool.set_normal(normal)
-			surface_tool.add_vertex(displaced_vertex)
+		surface_tool.set_normal(normal)
+		surface_tool.set_uv(Vector2(0.0, biome_percents[point_index + 1]))
+		surface_tool.add_vertex(displaced_b)
+
+		surface_tool.set_normal(normal)
+		surface_tool.set_uv(Vector2(0.0, biome_percents[point_index]))
+		surface_tool.add_vertex(displaced_a)
+		
+		point_index += 3
 
 	surface_tool.index()
 
-	if material_override:
-		material_override.set_shader_parameter("min_height", planet_data.min_height)
-		material_override.set_shader_parameter("max_height", planet_data.max_height)
-
+	# Create the final mesh
 	var t = MeshDataTool.new()
 	t.create_from_surface(surface_tool.commit(), 0)
 	self.mesh = surface_tool.commit()
 
-# Subdivide the icosphere
+	# Update shader parameters with min and max height ranges
+	if material_override:
+		material_override.set_shader_parameter("min_height", planet_data.min_height)
+		material_override.set_shader_parameter("max_height", planet_data.max_height)
+		material_override.set_shader_parameter("radius", planet_data.radius)
+
+		
+		material_override.set_shader_parameter("height_colour", planet_data.update_biome_texture())
+
+
+
 func subdivide_icosphere(planet_data : PlanetData):
 
+	"""
+	Subdivides the icosphere to add more detail to the planet mesh
+	The number of subdivisions is controlled by the planet_data.subdivisions
+	Reference: https://github.com/codatproduction/Solar-system
+	"""
+	
+	# Cache to store middle points between vertices to avoid duplication
 	var cache = {}
 
+	# Perform subdivision for specificed number of times
 	for i in planet_data.subdivisions:
 		var new_triangle = []
 
+		# Process each triangle
 		for triangle in triangles:
 			var a = triangle.vertices[0]
 			var b = triangle.vertices[1]
 			var c = triangle.vertices[2]
 
+			# Get the middle points of each edge
 			var ab = get_middle_point(cache, a, b)
 			var bc = get_middle_point(cache, b, c)
 			var ca = get_middle_point(cache, c, a)
 
+			# Create four new triangles from the original triangle
 			new_triangle.push_back(Triangle.new(a, ab, ca))
 			new_triangle.push_back(Triangle.new(b, bc, ab))
 			new_triangle.push_back(Triangle.new(c, ca, bc))
@@ -127,24 +186,36 @@ func subdivide_icosphere(planet_data : PlanetData):
 
 		triangles = new_triangle
 
-# Get the middle point between two vertices
+
 func get_middle_point(cache : Dictionary, a, b):
+
+	"""
+	Calculates and caches the middle point between two vertices
+	Returns the index of the middle point vertex
+	Referece: https://github.com/codatproduction/Solar-system
+	"""
+
 	var smaller = min(a, b)
 	var greater = max(a, b)
 	var key = (smaller << 16) + greater
 
+	# Return cached value if it exists
 	if cache.has(key):
 		return cache.get(key)
 
+	# Calculate a new middle point 
 	var point_a = vertices[a]
 	var point_b = vertices[b]
 	var middle = lerp(point_a, point_b, 0.5).normalized()
+
+	# Add new vertex and cache it
 	var ret = vertices.size()
 	vertices.push_back(middle)
 	cache[key] = ret
 	return ret
 
-# Triangle class
+# Class to represent a triangle face with 3 vertices
+
 class Triangle:
 	var vertices = []
 	func _init(a, b, c):

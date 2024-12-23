@@ -1,54 +1,24 @@
 shader_type spatial;
 
-uniform vec4 water : source_color;
-uniform vec4 shore : source_color;
-uniform vec4 grass : source_color;
-uniform vec4 mountain : source_color;
-uniform vec4 snow : source_color;
+uniform float min_height;
+uniform float max_height;
+uniform float radius;
+uniform sampler2D height_colour : repeat_disable;
 
-uniform float water_level : hint_range(0.0, 1.0);
-uniform float mountain_level : hint_range(0.0, 1.0);
-uniform float snow_level : hint_range(0.0, 1.0);
-
-uniform sampler2D noise;
-
-uniform float min_height = 0.0;
-uniform float max_height = 1.0;
-
-varying float height;
+varying float height_diff;
 
 void vertex() {
-	float a = length(VERTEX);
-	height = (a - min_height) / (max_height - min_height);
-	UV = vec2(VERTEX.x + VERTEX.z, VERTEX.y + VERTEX.z);
+	float base_radius = length(normalize(VERTEX) * radius);
+
+	height_diff = length(VERTEX) - base_radius;
 }
 
 void fragment() {
-	float ratio = height;
-	vec4 tex;
+	float t = (height_diff - min_height) / (max_height - min_height);
+	
+	t = clamp(t, 0.0, 1.0);
 
-	if (ratio < water_level) {
-		float shore_ratio = 0.005;
-		if (ratio > water_level - shore_ratio) {
-			tex = shore;
-		}
-		else {
-			// tex = texture(noise, sin(TIME * UV)) * water;
-			tex = water;
-		}
-	}
-	else if (ratio < mountain_level) {
-		// tex = texture(noise, UV) * grass; 
-		tex = grass;
-	}
-	else if (ratio < snow_level) {
-		tex = mountain;
-	}
-	else {
-		tex = snow;
-	}
-
-	ALBEDO = tex.rgb;
+	ALBEDO = texture(height_colour, vec2(t, UV.y)).rgb;
 }
 
 //void light() {

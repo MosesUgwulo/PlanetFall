@@ -2,90 +2,495 @@
 extends Resource
 class_name PlanetData
 
+# Array of noise layers used to generate the terrain
 @export var noise_layers : Array[PlanetNoise] : set = set_noise_layers
+
+# Base radius of the planet
 @export var radius : float = 1.0 : set = set_radius
+
+# Number of times to subdivide the base icosphere (higher values = more detail)
 @export_range(0, 6, 1) var subdivisions : float = 0 : set = set_subdivisions
 
+# Flag to enable stepped terrain generation
+@export var use_stepped_terrain: bool = false
+
+# Constants for tracking min and max height of the planet for shader parameters
 var min_height : float = INF
 var max_height : float = -INF
 
-# MAKE A SEPERATE BRANCH
 
-func point_on_planet(point_on_sphere : Vector3) -> Vector3:
+# Variables for biome generation
+@export_group("Biomes")
+@export var biomes : Array[PlanetBiome] : set = set_biomes
+@export var biome_noise : FastNoiseLite : set = set_biome_noise
+@export var biome_amplitude : float = 0.0 : set = set_biome_amplitude
+@export var biome_offset : float = 0.0 : set = set_biome_offset
+@export_range(0.0, 1.0) var biome_blend : float = 0.0 : set = set_biome_blend
+
+
+# Variables for terrain generation
+@export_group("Terrain")
+@export var num_terrain_levels: int = 4 
+@export var min_terrain_height: float = 0.0
+@export var max_terrain_height: float = 1.0
+@export var ledge_height : float = 0.5 : set = set_ledge_height
+
+
+
+func points_on_planet(points_on_sphere : Array[Vector3]) -> Array[Vector3]:
+	
+	"""
+	Calculates the final position of a point on the planet's surface
+	taking into account the noise layers and terrain height thresholds
+	Parameters:
+		point_on_sphere: An array of normalised points on the unit sphere
+	Returns:
+		The final positions of the points on the planet's surface
+	"""
+
+	# Return basic sphere if no noise layers are present
 	if noise_layers.is_empty():
-		return point_on_sphere * radius
+		return points_on_sphere.map(func(p): return p * radius)
 	
+	
+	var total_elevations = calculate_total_elevations(points_on_sphere)
+
+
+	return calculate_final_points(points_on_sphere, total_elevations)
+
+
+func calculate_total_elevations(points_on_sphere: Array[Vector3]) -> Array[float]:
+
+	"""
+	Calculates the total elevation from all noise layers
+	based on the terrain generation mode
+	"""
+	
+	if use_stepped_terrain:
+		return calculate_stepped_terrain(points_on_sphere)
+	else:
+		return calculate_continous_terrain(points_on_sphere)
+
+
+func calculate_continous_terrain(points_on_sphere: Array[Vector3]) -> Array[float]:
+
+	"""
+	Calculates the total elevation from all noise layers
+	"""
+
 	var base_elevation := 0.0
-	var first_layer_raw := 0.0
-
-	if noise_layers.size() > 0 and noise_layers[0] != null and noise_layers[0].noise != null:
-		
-		var sample_point = point_on_sphere * noise_layers[0].scale_factor
-		var first_noise = noise_layers[0].noise.get_noise_3dv(sample_point)
-
-		first_layer_raw = (first_noise + 1.0) * 0.5
-
-		base_elevation = first_layer_raw * noise_layers[0].amplitude
-		base_elevation = max(0.0, base_elevation - noise_layers[0].min_height)
+	var first_layer := 0.0
+	var total_elevation: Array[float] = []
 	
-	var total_elevation := base_elevation
+	# Process first noise layer (can be used as a mask for subsequent layers)
+	if noise_layers.size() > 0 and noise_layers[0] != null and noise_layers[0].noise != null:
 
-	for i in range(1, noise_layers.size()):
+		for point in points_on_sphere:
+			first_layer = calculate_noise(point)
 
-		var layer := noise_layers[i]
-		if layer == null or layer.noise == null:
-			continue
+
+			# Calculate base elevation
+			base_elevation = first_layer * noise_layers[0].amplitude
+			base_elevation = max(0.0, base_elevation - noise_layers[0].min_height)
+			base_elevation *= noise_layers[0].strength
+
+			total_elevation.push_back(base_elevation)
+
+	# for i in range(1, noise_layers.size()):
+	# 	var layer_elevation = calculate_layer_elevation(point_on_sphere, i, first_layer, base_elevation)
 		
-		var mask := 1.0
+	# 	total_elevation += layer_elevation
 
-		if layer.use_first_layer_as_mask:
-			mask = first_layer_raw
-			mask = pow(mask, 2.0)
+	return total_elevation
 
-			if base_elevation <= 0:
+
+
+func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]:
+	
+
+	"""
+	Calculates the total elevation from all noise layers
+	by clamping the elevation to specific thresholds
+	"""
+
+	if noise_layers[0] == null or noise_layers[0].noise == null:
+		var zeros: Array[float] = []
+		zeros.resize(points_on_sphere.size())
+		zeros.fill(0.0)
+		return zeros
+	
+	# Height tracking variables
+	var minVal = INF
+	var maxVal = -INF
+
+	# Arrays to store elevation thresholds, heights and final elevations
+	var thresholds: Array[float] = []
+	var heights: Array[float] = []
+	var elevations: Array[float] = []
+
+
+	# Calculate terrain thresholds and heights based on the number of terrain levels
+	for i in range(num_terrain_levels):
+		var threshold = float(i + 1) / float(num_terrain_levels)
+		thresholds.push_back(threshold)
+
+		var height = lerp(min_terrain_height, max_terrain_height, threshold)
+		heights.push_back(height)
+
+	# Generate gradient colors for each terrain level
+	# generate_gradient_colors_for_terrain_levels(thresholds, noise_layers[0].noise.seed)
+	
+	# Calculate min and max elevation values
+	for point in points_on_sphere:
+
+		var noise_value = calculate_noise(point)
+		minVal = min(minVal, noise_value)
+		maxVal = max(maxVal, noise_value)
+
+	
+	# Calculate final elevations based on thresholds and heights
+	for point in points_on_sphere:
+		var normalisedMagnitude = (calculate_noise(point) - minVal) / (maxVal - minVal)
+
+		var normalisedPoint = point.normalized() * normalisedMagnitude
+
+		var elevation = normalisedPoint.length()
+
+
+		var final_height = heights[0]
+		for i in range(thresholds.size()):
+			if elevation <= thresholds[i]:
+				final_height = heights[i]
+				break
+		
+		elevations.push_back(final_height)
+
+	return elevations
+
+
+
+func calculate_noise(point_on_sphere: Vector3) -> float:
+	"""
+	Calculates the noise value for a specific point on the sphere
+	"""
+	var sample_point = point_on_sphere * noise_layers[0].scale_factor
+	var first_noise = noise_layers[0].noise.get_noise_3dv(sample_point)
+	
+	
+	# convert noise value to range [0, 1]
+	return (first_noise + 1.0) * 0.5
+
+
+func calculate_biome_noise(point_on_sphere: Vector3) -> float:
+	"""
+	Calculates the biome noise value for a specific point on the sphere
+	"""
+
+	if biome_noise == null:
+		return 0.0
+	var sample_point = point_on_sphere * 100.0
+	var biome_noise_val = biome_noise.get_noise_3dv(sample_point)
+	
+	# convert noise value to range [0, 1]
+	return (biome_noise_val + 1.0) * 0.5
+
+
+func calculate_layer_elevation(point_on_sphere: Vector3, layer_index: int, first_layer: float, base_elevation: float) -> float:
+
+	"""
+	Calculates the combined elevation from multiple noise layers
+	"""
+
+	var layer := noise_layers[layer_index]
+
+	
+
+	if layer == null or layer.noise == null:
+		return 0.0
+	
+	var mask := 1.0
+
+	# Apply first layer as mask if enabled
+	if layer.use_first_layer_as_mask:
+		mask = pow(first_layer, 1.0)
+
+		if base_elevation <= 0:
+			return 0.0
+	
+	# Sample noise and apply elevation
+	var sample_point = point_on_sphere * layer.scale_factor
+	var noise_val = layer.noise.get_noise_3dv(sample_point)
+
+	noise_val = (noise_val + 1.0) * 0.5
+
+	noise_val = noise_val * layer.amplitude * mask
+	noise_val = max(0.0, noise_val - layer.min_height)
+	noise_val *= layer.strength
+
+	return noise_val
+
+	
+
+func calculate_final_points(points_on_sphere: Array[Vector3], heights: Array[float]) -> Array[Vector3]:
+	"""
+	Calculates the final points on the planet's surface based on the terrain heights
+	Updates min and max height values for shader parameters
+	"""
+
+	var final_points: Array[Vector3] = []
+
+	for i in range(points_on_sphere.size()):
+		var point = points_on_sphere[i]
+		var height = heights[i]
+		
+		var final_point = point * radius * (1.0 + height * ledge_height)
+
+		var base_radius = point * radius
+		var height_difference = final_point.length() - base_radius.length()
+ 
+		min_height = min(min_height, height_difference)
+		max_height = max(max_height, height_difference)
+
+		final_points.push_back(final_point)
+
+	return final_points
+
+
+
+func generate_gradient_colors_for_terrain_levels(thresholds: Array[float], noise_seed: int) -> void:
+
+	"""
+	Generates gradient colors for each terrain level
+	based on the number of thresholds and a noise seed
+	"""
+
+	if biomes[0].gradientTexture:
+		var gradient = biomes[0].gradientTexture.gradient
+
+		while gradient.get_point_count() > 1:
+			gradient.remove_point(1)
+
+		var rng = RandomNumberGenerator.new()
+		rng.seed = noise_seed
+
+		var first_colour = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1), 1.0)
+		gradient.set_color(0, first_colour)
+
+		for i in range(thresholds.size() - 1):
+			var threshold = thresholds[i]
+
+			var random_colour = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1), 1.0)
+			gradient.add_point(threshold, random_colour)
+
+
+func update_biome_texture() -> ImageTexture:
+
+	"""
+	Updates the gradient texture for the biomes
+	by combining the gradient textures of each biome
+	"""
+
+	var image_texture = ImageTexture.new()
+	var dynamic_image = Image.new()
+	var height : int = biomes.size()
+
+	if biomes.size() > 0 and biomes[0] != null and biomes[0].gradientTexture != null:
+		
+		if height > 0:
+			var data: PackedByteArray = []
+			var width: int = biomes[0].gradientTexture.get_width()
+			
+			for biome in biomes:
+
+				if biome == null or biome.gradientTexture == null:
+					continue
+				
+				var image = biome.gradientTexture.get_image()
+				data.append_array(image.get_data())
+
+			dynamic_image = Image.create_from_data(width, height, false, Image.FORMAT_RGBA8, data)
+			image_texture.set_image(dynamic_image)
+			image_texture.resource_name = "GradientTexture"
+		
+		return image_texture
+
+	return image_texture
+
+
+
+func get_biome_gradient_index(points_on_sphere : Array[Vector3]) -> Array[float]:
+
+	"""
+	Calculates the biome gradient index for each point on the sphere
+	and adds an option to blend between biomes
+	"""
+
+	var biome_percent : Array[float] = []
+
+	if biomes.size() == 0:
+		return biome_percent
+
+	for point in points_on_sphere:
+		var height_percent : float = (point.y + 1.0) / 2.0
+
+		var noise_value = calculate_biome_noise(point)
+		height_percent += (noise_value - biome_offset) * biome_amplitude
+
+		var num_biomes : float = biomes.size()
+		var biome_index : float = 0.0
+		var blend_range : float = biome_blend / 2.0 + 0.0001
+
+		for i in range(num_biomes):
+			if biomes[i] == null:
 				continue
+
+			var dst : float = height_percent - biomes[i].start_height
+			var weight = clamp(inverse_lerp(-blend_range, blend_range, dst), 0.0, 1.0)
+			biome_index *= (1.0 - weight)
+			biome_index += i * weight
 		
-		var sample_point = point_on_sphere * layer.scale_factor
-		var noise_val = layer.noise.get_noise_3dv(sample_point)
+		biome_percent.push_back(biome_index / max(1.0, num_biomes - 1.0))
+	
+	return biome_percent
 
-		noise_val = (noise_val + 1.0) * 0.5
-		noise_val = noise_val * layer.amplitude * mask
-		noise_val = max(0.0, noise_val - layer.min_height)
-
-		total_elevation += noise_val
-
-	var final_point = point_on_sphere * radius * (total_elevation + 1.0)
-
-	var height = final_point.length()
-	min_height = min(min_height, height)
-	max_height = max(max_height, height)
-
-	return final_point
 
 
 func set_noise_layers(value):
+
+	"""
+	Setter for noise_layers that ensures proper signal connections
+	"""
+
 	noise_layers = value
 	emit_signal("changed")
 
 	for noise_layer in noise_layers:
-		if noise_layer != null and not noise_layer.is_connected("changed", _on_noise_changed):
-			noise_layer.connect("changed", _on_noise_changed)
+		if noise_layer != null and not noise_layer.is_connected("changed", _on_data_changed):
+			noise_layer.connect("changed", _on_data_changed)
+
+
+func set_biomes(value):
+
+	"""
+	Setter for biomes that ensures proper signal connections
+	"""
+
+	biomes = value
+	emit_signal("changed")
+	
+	for biome in biomes:
+		if biome == null:
+			PlanetBiome.new()
+			
+	
+	for biome in biomes:
+		if biome != null and not biome.is_connected("changed", _on_data_changed):
+			biome.connect("changed", _on_data_changed)
+
+
+func set_biome_noise(value):
+
+	"""
+	Setter for biome_noise that ensures proper signal connections
+	"""
+	
+	biome_noise = value
+	emit_signal("changed")
+	
+	if biome_noise != null and not biome_noise.is_connected("changed", _on_data_changed):
+		biome_noise.connect("changed", _on_data_changed)
+
+
+func set_biome_amplitude(value):
+
+	"""
+	Setter for biome_amplitude that sends a signal when changed
+	and triggers planet updates when the biome amplitude is changed
+	"""
+
+	biome_amplitude = value
+	emit_signal("changed")
+
+
+func set_biome_offset(value):
+
+	"""
+	Setter for biome_offset that sends a signal when changed
+	and triggers planet updates when the biome offset is changed
+	"""
+
+	biome_offset = value
+	emit_signal("changed")
+
+
+func set_biome_blend(value):
+
+	"""
+	Setter for biome_blend that sends a signal when changed
+	and triggers planet updates when the biome blend is changed
+	"""
+
+	biome_blend = value
+	emit_signal("changed")
+
+
+func set_ledge_height(value):
+
+	"""
+	Setter for ledge_height that sends a signal when changed
+	and triggers planet updates when the ledge height is changed
+	"""
+
+	ledge_height = value
+	emit_signal("changed")
 
 
 func set_radius(value):
+	
+	"""
+	Setter for radius that sends a signal when changed
+	and triggers planet updates when the planet radius is changed
+	"""
+
 	radius = value
 	emit_signal("changed")
 
 
 func set_subdivisions(value):
+	
+	"""
+	Setter for subdivisions that sends a signal when changed
+	and triggers planet updates when the number of subdivisions is changed
+	"""
+
 	subdivisions = value
 	emit_signal("changed")
 
 
-func _on_noise_changed():
+func _on_data_changed():
+	
+	"""
+	Called when the noise layers or biome data is changed
+	"""
+
 	emit_signal("changed")
 
 
 func reset_height():
+
+	"""
+	Resets the min and max height tracking for the planet
+	"""
+	
 	min_height = INF
 	max_height = -INF
+
+
+func smoothstep(edge0: float, edge1: float, x: float) -> float:
+
+	"""
+	Returns a smooth interpolation between 0 and 1
+	"""
+	
+	var t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0)
+	return t * t * (3.0 - 2.0 * t)
