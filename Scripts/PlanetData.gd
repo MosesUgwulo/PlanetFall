@@ -25,7 +25,7 @@ var max_height : float = -INF
 @export var biome_noise : FastNoiseLite : set = set_biome_noise
 @export var biome_amplitude : float = 0.0 : set = set_biome_amplitude
 @export var biome_offset : float = 0.0 : set = set_biome_offset
-@export_range(0.0, 2.0) var biome_blend : float = 0.0 : set = set_biome_blend
+@export_range(0.0, 1.0) var biome_blend : float = 0.0 : set = set_biome_blend
 
 
 # Variables for terrain generation

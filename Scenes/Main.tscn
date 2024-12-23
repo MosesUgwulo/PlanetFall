@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://hbkgpxdwnsyy"]
+[gd_scene load_steps=7 format=3 uid="uid://hbkgpxdwnsyy"]
 
 [ext_resource type="Texture2D" uid="uid://dfbgthh5qfnt8" path="res://Assets/panorama_image.png" id="1_oq22l"]
 [ext_resource type="PackedScene" uid="uid://cfko1j3mivho4" path="res://Scenes/Planet.tscn" id="2_stmvw"]
+[ext_resource type="PackedScene" uid="uid://s1iim5sxtjj1" path="res://Scenes/UI/canvas_layer.tscn" id="3_2nnoj"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_oaidj"]
 panorama = ExtResource("1_oq22l")
@@ -24,9 +25,7 @@ environment = SubResource("Environment_phdfk")
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 2.93107, 1.90601, 0)
 shadow_enabled = true
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.632922, 0.774216, 0, -0.774216, 0.632922, -0.627091, 16.9309, 11.8777)
-current = true
-
 [node name="Planet" parent="." instance=ExtResource("2_stmvw")]
 noise_seed = 9234735
+
+[node name="CanvasLayer" parent="." instance=ExtResource("3_2nnoj")]
