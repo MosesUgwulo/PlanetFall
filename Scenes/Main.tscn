@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dfbgthh5qfnt8" path="res://Assets/panorama_image.png" id="1_oq22l"]
 [ext_resource type="PackedScene" uid="uid://cfko1j3mivho4" path="res://Scenes/Planet.tscn" id="2_stmvw"]
-[ext_resource type="PackedScene" uid="uid://s1iim5sxtjj1" path="res://Scenes/UI/canvas_layer.tscn" id="3_2nnoj"]
+[ext_resource type="PackedScene" uid="uid://s1iim5sxtjj1" path="res://Scenes/UI/UI.tscn" id="3_2nnoj"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_oaidj"]
 panorama = ExtResource("1_oq22l")
@@ -28,4 +28,5 @@ shadow_enabled = true
 [node name="Planet" parent="." instance=ExtResource("2_stmvw")]
 noise_seed = 9234735
 
-[node name="CanvasLayer" parent="." instance=ExtResource("3_2nnoj")]
+[node name="UI" parent="." node_paths=PackedStringArray("planet") instance=ExtResource("3_2nnoj")]
+planet = NodePath("../Planet")

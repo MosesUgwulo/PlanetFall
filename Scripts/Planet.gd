@@ -1,5 +1,6 @@
 @tool
 extends Node
+class_name Planet
 
 # Reference to the planet data resource
 @export var planet_data : PlanetData : set = set_planet_data
