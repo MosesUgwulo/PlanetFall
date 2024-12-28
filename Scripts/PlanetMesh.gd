@@ -3,11 +3,27 @@ extends MeshInstance3D
 class_name PlanetMesh
 
 # Array to store data for the planet
-var triangles = [] # Stores triangle face data
-var vertices = [] # Stores vertex positions
+var triangles : Array = [] # Stores triangle face data
+var vertices : Array[Vector3] = [] # Stores vertex positions
+
+
+# Threading Variables
+var mutex : Mutex
+var thread : Thread
+var is_generating : bool = false
+
+
+# Temp storage for thread results
+var thread_points_to_process : Array[Vector3] = []
+var thread_displaced_points : Array[Vector3] = []
+var thread_biome_percents : Array[float] = []
 
 
 func _ready():
+	# Initialize threading variables
+	mutex = Mutex.new()
+	thread = Thread.new()
+
 	# Clears any existing mesh data when the node is ready
 	vertices.clear()
 	triangles.clear()
@@ -22,23 +38,46 @@ func generate_planet(planet_data : PlanetData):
 		planet_data: Contains the parameters for planet generation (noise layers, radius, terrain heights, etc...)
 	"""
 
-	# planet_data.randomise_levels()
+	if is_generating:
+		return
 
+	is_generating = true
+	thread.start(Callable(self, "_generate_planet_thread").bind(planet_data))
+
+
+
+
+func _generate_planet_thread(planet_data : PlanetData):
 	# Reset min and max height tracking in planet data
 	planet_data.reset_height()
 
-	# Clears any existing mesh data
 	vertices.clear()
 	triangles.clear()
-	mesh = null
-
+	
 	# Generate the planet in three steps:
 	# 1. Generate the base icosphere
 	generate_icosphere()
 	# 2. Subdivide the icosphere for more detail
 	subdivide_icosphere(planet_data)
-	# 3. Generate the final mesh with some form of displacement based on the noise layers
-	generate_mesh(planet_data)
+
+
+	# Prepare points for displacement
+	var points_to_process: Array[Vector3] = []
+
+	# Process each triangle
+	for triangle in triangles:
+		for vertex_index in triangle.vertices:
+			points_to_process.push_back(vertices[vertex_index].normalized())
+
+	# Store results for the main thread
+	thread_points_to_process = points_to_process
+	thread_displaced_points = planet_data.points_on_planet(points_to_process)
+	thread_biome_percents = planet_data.get_biome_gradient_index(points_to_process)
+
+
+	# Schedule the final mesh generation on the main thread
+	call_deferred("generate_mesh", planet_data)
+	return
 
 
 func generate_icosphere():
@@ -96,40 +135,33 @@ func generate_mesh(planet_data : PlanetData):
 	Applies height displacement based on planet_data passed in
 	"""
 
+	thread.wait_to_finish()
+
 	var surface_tool = SurfaceTool.new()
 	surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 
-	var points_to_process: Array[Vector3] = []
-
-	# Process each triangle
-	for triangle in triangles:
-		for vertex_index in triangle.vertices:
-			points_to_process.push_back(vertices[vertex_index].normalized())
-
-	var displaced_points = planet_data.points_on_planet(points_to_process)
-	var biome_percents = planet_data.get_biome_gradient_index(points_to_process)
 		
 	var point_index = 0
 	for triangle in triangles:
 
-		var displaced_a = displaced_points[point_index]
-		var displaced_b = displaced_points[point_index + 1]
-		var displaced_c = displaced_points[point_index + 2]
+		var displaced_a = thread_displaced_points[point_index]
+		var displaced_b = thread_displaced_points[point_index + 1]
+		var displaced_c = thread_displaced_points[point_index + 2]
 
 		# Calculate face normal for lighting
 		var normal = (displaced_b - displaced_a).cross(displaced_c - displaced_a).normalized()
 
 		# Add vertices in reverse order - manual for now
 		surface_tool.set_normal(normal)
-		surface_tool.set_uv(Vector2(0.0, biome_percents[point_index + 2]))
+		surface_tool.set_uv(Vector2(0.0, thread_biome_percents[point_index + 2]))
 		surface_tool.add_vertex(displaced_c)
 
 		surface_tool.set_normal(normal)
-		surface_tool.set_uv(Vector2(0.0, biome_percents[point_index + 1]))
+		surface_tool.set_uv(Vector2(0.0, thread_biome_percents[point_index + 1]))
 		surface_tool.add_vertex(displaced_b)
 
 		surface_tool.set_normal(normal)
-		surface_tool.set_uv(Vector2(0.0, biome_percents[point_index]))
+		surface_tool.set_uv(Vector2(0.0, thread_biome_percents[point_index]))
 		surface_tool.add_vertex(displaced_a)
 		
 		point_index += 3
@@ -146,9 +178,9 @@ func generate_mesh(planet_data : PlanetData):
 		material_override.set_shader_parameter("min_height", planet_data.min_height)
 		material_override.set_shader_parameter("max_height", planet_data.max_height)
 		material_override.set_shader_parameter("radius", planet_data.radius)
-
-		
 		material_override.set_shader_parameter("height_colour", planet_data.update_biome_texture())
+	
+	is_generating = false
 
 
 
@@ -213,6 +245,11 @@ func get_middle_point(cache : Dictionary, a, b):
 	vertices.push_back(middle)
 	cache[key] = ret
 	return ret
+
+
+func _exit_tree():
+	if thread and thread.is_started():
+		thread.wait_to_finish()
 
 # Class to represent a triangle face with 3 vertices
 

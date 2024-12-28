@@ -34,39 +34,66 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -60.0
+offset_left = -315.0
 offset_top = 20.0
 offset_right = -20.0
-offset_bottom = 60.0
+offset_bottom = 143.0
 grow_horizontal = 0
 
-[node name="Settings - Vbox" type="VBoxContainer" parent="RootControl/MarginContainer"]
+[node name="Settings" type="VBoxContainer" parent="RootControl/MarginContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="RootControl/MarginContainer/Settings - Vbox"]
+[node name="Radius Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="RootControl/MarginContainer/Settings - Vbox/HBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="RootControl/MarginContainer/Settings - Vbox/HBoxContainer/VBoxContainer"]
-layout_mode = 2
-text = "TEST"
-
-[node name="SpinBox" type="SpinBox" parent="RootControl/MarginContainer/Settings - Vbox/HBoxContainer"]
+[node name="Radius Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Radius Setting"]
 layout_mode = 2
 size_flags_horizontal = 3
-min_value = -100.0
-step = 0.1
 
-[node name="GenerateBtnVBox" type="VBoxContainer" parent="RootControl/MarginContainer/Settings - Vbox"]
+[node name="Radius" type="Label" parent="RootControl/MarginContainer/Settings/Radius Setting/Radius Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Radius"
+uppercase = true
+
+[node name="Radius Value" type="SpinBox" parent="RootControl/MarginContainer/Settings/Radius Setting"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+step = 0.01
+value = 5.0
+
+[node name="Subdivisions Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
+layout_mode = 2
+
+[node name="Subdivisions Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Subdivisions Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Subdivisions" type="Label" parent="RootControl/MarginContainer/Settings/Subdivisions Setting/Subdivisions Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Subdivisions"
+horizontal_alignment = 1
+uppercase = true
+
+[node name="Subdivisions Value" type="SpinBox" parent="RootControl/MarginContainer/Settings/Subdivisions Setting"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 6.0
+value = 4.0
+
+[node name="GenerateBtnVBox" type="VBoxContainer" parent="RootControl/MarginContainer/Settings"]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="RootControl/MarginContainer/Settings - Vbox/GenerateBtnVBox"]
+[node name="Button" type="Button" parent="RootControl/MarginContainer/Settings/GenerateBtnVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 32
 text = "Generate"
 
-[connection signal="pressed" from="RootControl/MarginContainer/Settings - Vbox/GenerateBtnVBox/Button" to="." method="_generate_planet"]
+[connection signal="value_changed" from="RootControl/MarginContainer/Settings/Radius Setting/Radius Value" to="." method="_on_radius_value_changed"]
+[connection signal="value_changed" from="RootControl/MarginContainer/Settings/Subdivisions Setting/Subdivisions Value" to="." method="_on_subdivisions_value_changed"]
+[connection signal="pressed" from="RootControl/MarginContainer/Settings/GenerateBtnVBox/Button" to="." method="_generate_planet"]
