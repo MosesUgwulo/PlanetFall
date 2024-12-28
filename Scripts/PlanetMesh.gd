@@ -10,7 +10,14 @@ var vertices : Array[Vector3] = [] # Stores vertex positions
 # Threading Variables
 var mutex : Mutex
 var thread : Thread
-var is_generating : bool = false
+
+# Signal to notify when the planet generation status changes
+signal generate_status_changed(is_generating : bool)
+
+var is_generating : bool = false:
+	set(value):
+		is_generating = value
+		generate_status_changed.emit(is_generating)
 
 
 # Temp storage for thread results
@@ -19,7 +26,9 @@ var thread_displaced_points : Array[Vector3] = []
 var thread_biome_percents : Array[float] = []
 
 
+
 func _ready():
+
 	# Initialize threading variables
 	mutex = Mutex.new()
 	thread = Thread.new()
@@ -43,7 +52,6 @@ func generate_planet(planet_data : PlanetData):
 
 	is_generating = true
 	thread.start(Callable(self, "_generate_planet_thread").bind(planet_data))
-
 
 
 
@@ -180,8 +188,7 @@ func generate_mesh(planet_data : PlanetData):
 		material_override.set_shader_parameter("radius", planet_data.radius)
 		material_override.set_shader_parameter("height_colour", planet_data.update_biome_texture())
 	
-	is_generating = false
-
+	self.is_generating = false
 
 
 func subdivide_icosphere(planet_data : PlanetData):

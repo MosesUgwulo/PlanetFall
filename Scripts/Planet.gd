@@ -6,6 +6,7 @@ class_name Planet
 @export var planet_data : PlanetData : set = set_planet_data
 @export var noise_seed : int = 0
 
+
 func set_planet_data(value):
 
 	"""

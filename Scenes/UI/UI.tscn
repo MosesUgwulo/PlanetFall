@@ -49,6 +49,7 @@ layout_mode = 2
 [node name="Radius Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Radius Setting"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Affects how big the planet is"
 
 [node name="Radius" type="Label" parent="RootControl/MarginContainer/Settings/Radius Setting/Radius Container"]
 layout_mode = 2
@@ -69,6 +70,7 @@ layout_mode = 2
 [node name="Subdivisions Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Subdivisions Setting"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Affects how detailed the planet is"
 
 [node name="Subdivisions" type="Label" parent="RootControl/MarginContainer/Settings/Subdivisions Setting/Subdivisions Container"]
 layout_mode = 2
@@ -97,3 +99,4 @@ text = "Generate"
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Radius Setting/Radius Value" to="." method="_on_radius_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Subdivisions Setting/Subdivisions Value" to="." method="_on_subdivisions_value_changed"]
 [connection signal="pressed" from="RootControl/MarginContainer/Settings/GenerateBtnVBox/Button" to="." method="_generate_planet"]
+[connection signal="pressed" from="RootControl/MarginContainer/Settings/GenerateBtnVBox/Button" to="." method="_on_generate_status_changed"]
