@@ -14,11 +14,18 @@ void vertex() {
 }
 
 void fragment() {
-	float t = (height_diff - min_height) / (max_height - min_height);
-	
-	t = clamp(t, 0.0, 1.0);
 
-	ALBEDO = texture(height_colour, vec2(t, UV.y)).rgb;
+	if (min_height == max_height) {
+		ALBEDO = vec3(1.0);
+	} else {
+
+		float t = (height_diff - min_height) / (max_height - min_height);
+
+		t = clamp(t, 0.0, 1.0);
+
+		ALBEDO = texture(height_colour, vec2(t, UV.y)).rgb;
+	}
+
 }
 
 //void light() {

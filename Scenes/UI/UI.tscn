@@ -25,8 +25,6 @@ layout_mode = 3
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -40.0
-offset_bottom = 40.0
 grow_horizontal = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="RootControl"]
@@ -34,22 +32,62 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -315.0
-offset_top = 20.0
-offset_right = -20.0
-offset_bottom = 143.0
+offset_left = -332.0
+offset_bottom = 213.0
 grow_horizontal = 0
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
 
 [node name="Settings" type="VBoxContainer" parent="RootControl/MarginContainer"]
 layout_mode = 2
 
+[node name="Noise Layers Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
+layout_mode = 2
+tooltip_text = "Add Noise Layers to the planet"
+
+[node name="Noise Layers Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Layers Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Affects how big the planet is"
+
+[node name="Noise Layers" type="Label" parent="RootControl/MarginContainer/Settings/Noise Layers Setting/Noise Layers Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Noise Layers"
+uppercase = true
+
+[node name="Add Noise Layer Button" type="Button" parent="RootControl/MarginContainer/Settings/Noise Layers Setting"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Add Noise Layer"
+
+[node name="Seed Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
+layout_mode = 2
+tooltip_text = "Generates a different looking planet"
+
+[node name="Seed Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Seed Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Seed" type="Label" parent="RootControl/MarginContainer/Settings/Seed Setting/Seed Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Seed"
+uppercase = true
+
+[node name="Seed Value" type="LineEdit" parent="RootControl/MarginContainer/Settings/Seed Setting"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="Radius Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
 layout_mode = 2
+tooltip_text = "Affects how big the planet is"
 
 [node name="Radius Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Radius Setting"]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Affects how big the planet is"
 
 [node name="Radius" type="Label" parent="RootControl/MarginContainer/Settings/Radius Setting/Radius Container"]
 layout_mode = 2
@@ -62,15 +100,15 @@ custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 step = 0.01
-value = 5.0
+value = 1.0
 
 [node name="Subdivisions Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
 layout_mode = 2
+tooltip_text = "Affects how detailed the planet is"
 
 [node name="Subdivisions Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Subdivisions Setting"]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Affects how detailed the planet is"
 
 [node name="Subdivisions" type="Label" parent="RootControl/MarginContainer/Settings/Subdivisions Setting/Subdivisions Container"]
 layout_mode = 2
@@ -84,19 +122,63 @@ custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 6.0
-value = 4.0
 
 [node name="GenerateBtnVBox" type="VBoxContainer" parent="RootControl/MarginContainer/Settings"]
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="RootControl/MarginContainer/Settings/GenerateBtnVBox"]
+[node name="Generate Button" type="Button" parent="RootControl/MarginContainer/Settings/GenerateBtnVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 32
 text = "Generate"
 
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PopupPanel" type="PopupPanel" parent="Control"]
+initial_position = 1
+size = Vector2i(500, 500)
+visible = true
+borderless = false
+min_size = Vector2i(500, 500)
+
+[node name="Control" type="Control" parent="Control/PopupPanel"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 496.0
+offset_bottom = 496.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/PopupPanel/Control"]
+layout_mode = 0
+offset_right = 500.0
+offset_bottom = 500.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/PopupPanel/Control/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Button" type="Button" parent="Control/PopupPanel/Control"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 0
+offset_left = 200.0
+offset_top = 400.0
+offset_right = 300.0
+offset_bottom = 500.0
+text = "Add"
+
+[connection signal="pressed" from="RootControl/MarginContainer/Settings/Noise Layers Setting/Add Noise Layer Button" to="." method="_on_add_noise_layer_button_pressed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Radius Setting/Radius Value" to="." method="_on_radius_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Subdivisions Setting/Subdivisions Value" to="." method="_on_subdivisions_value_changed"]
-[connection signal="pressed" from="RootControl/MarginContainer/Settings/GenerateBtnVBox/Button" to="." method="_generate_planet"]
-[connection signal="pressed" from="RootControl/MarginContainer/Settings/GenerateBtnVBox/Button" to="." method="_on_generate_status_changed"]
+[connection signal="pressed" from="RootControl/MarginContainer/Settings/GenerateBtnVBox/Generate Button" to="." method="_generate_planet"]
+[connection signal="pressed" from="Control/PopupPanel/Control/Button" to="." method="_add_layer"]

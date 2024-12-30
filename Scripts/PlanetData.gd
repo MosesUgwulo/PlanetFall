@@ -50,7 +50,14 @@ func points_on_planet(points_on_sphere : Array[Vector3]) -> Array[Vector3]:
 
 	# Return basic sphere if no noise layers are present
 	if noise_layers.is_empty():
-		return points_on_sphere.map(func(p): return p * radius)
+
+		min_height = 0.0
+		max_height = 0.0
+
+		var points : Array[Vector3] = []
+		for p in points_on_sphere:
+			points.push_back(p * radius)
+		return points
 	
 	
 	var total_elevations = calculate_total_elevations(points_on_sphere)

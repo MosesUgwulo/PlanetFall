@@ -12,8 +12,10 @@ var mutex : Mutex
 var thread : Thread
 
 # Signal to notify when the planet generation status changes
+# Remove this after playtesting
 signal generate_status_changed(is_generating : bool)
 
+# Remove this after playtesting
 var is_generating : bool = false:
 	set(value):
 		is_generating = value
@@ -47,11 +49,15 @@ func generate_planet(planet_data : PlanetData):
 		planet_data: Contains the parameters for planet generation (noise layers, radius, terrain heights, etc...)
 	"""
 
+	""" Comment this out to edit variables in the inspector"""
 	if is_generating:
 		return
 
 	is_generating = true
 	thread.start(Callable(self, "_generate_planet_thread").bind(planet_data))
+
+	""" Add this to edit variables in the inspector"""
+	# _generate_planet_thread(planet_data)
 
 
 
@@ -143,6 +149,7 @@ func generate_mesh(planet_data : PlanetData):
 	Applies height displacement based on planet_data passed in
 	"""
 
+	""" Comment this out to edit variables in the inspector"""
 	thread.wait_to_finish()
 
 	var surface_tool = SurfaceTool.new()
@@ -159,7 +166,21 @@ func generate_mesh(planet_data : PlanetData):
 		# Calculate face normal for lighting
 		var normal = (displaced_b - displaced_a).cross(displaced_c - displaced_a).normalized()
 
-		# Add vertices in reverse order - manual for now
+
+		if thread_biome_percents.size() == 0:
+			surface_tool.set_normal(normal)
+			surface_tool.add_vertex(displaced_c)
+
+			surface_tool.set_normal(normal)
+			surface_tool.add_vertex(displaced_b)
+
+			surface_tool.set_normal(normal)
+			surface_tool.add_vertex(displaced_a)
+			point_index += 3
+			continue
+		
+
+		# Add vertices in reverse order
 		surface_tool.set_normal(normal)
 		surface_tool.set_uv(Vector2(0.0, thread_biome_percents[point_index + 2]))
 		surface_tool.add_vertex(displaced_c)
