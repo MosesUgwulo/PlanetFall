@@ -23,6 +23,7 @@ func set_planet_data(value):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# planet_data = PlanetData.new()
 
 	"""
 	Initializes randomized planet data when the node is ready
@@ -40,22 +41,22 @@ func _initialize_planet_data():
 	only if the game is not running in the editor
 	"""
 	if not Engine.is_editor_hint():
-		if planet_data and planet_data.noise_layers.size() > 0 and planet_data.noise_layers[0].noise:
+		if planet_data and planet_data.planet_noise.size() > 0 and planet_data.planet_noise.noise:
 
-			planet_data.noise_layers[0].noise.seed = noise_seed
+			planet_data.planet_noise.noise.seed = hash(str(noise_seed))
 
 			var rng = RandomNumberGenerator.new()
-			rng.seed = noise_seed
+			rng.seed = hash(str(noise_seed))
 
 			planet_data.num_terrain_levels = rng.randi_range(4, 8)
 			planet_data.max_terrain_height = rng.randf_range(1.0, 3.0)
-			planet_data.noise_layers[0].noise.fractal_weighted_strength = rng.randf_range(0.0, 1.0)
-			planet_data.noise_layers[0].noise.fractal_octaves = rng.randi_range(1, 10)
-			planet_data.noise_layers[0].noise.fractal_lacunarity = rng.randf_range(-1.0, 1.0)
-			planet_data.noise_layers[0].noise.fractal_gain = rng.randf_range(0.0, 1.0)
+			planet_data.planet_noise.noise.fractal_weighted_strength = rng.randf_range(0.0, 1.0)
+			planet_data.planet_noise.noise.fractal_octaves = rng.randi_range(1, 10)
+			planet_data.planet_noise.noise.fractal_lacunarity = rng.randf_range(-1.0, 1.0)
+			planet_data.planet_noise.noise.fractal_gain = rng.randf_range(0.0, 1.0)
 			planet_data.subdivisions = rng.randi_range(5, 6)
-			planet_data.noise_layers[0].scale_factor = rng.randf_range(50, 100)
-			planet_data.noise_layers[0].noise.frequency = rng.randf_range(0.01, 0.02)
+			planet_data.planet_noise.scale_factor = rng.randf_range(50, 100)
+			planet_data.planet_noise.noise.frequency = rng.randf_range(0.01, 0.02)
 
 
 func _on_planet_changed():
@@ -81,6 +82,5 @@ func _on_planet_changed():
 			# print("Subdivisions: ", planet_data.subdivisions)
 			# print("Scale factor: ", planet_data.noise_layers[0].scale_factor)
 			# print("Frequency: ", planet_data.noise_layers[0].noise.frequency)
-
+			# print(noise_seed)
 			mesh.generate_planet(planet_data)
-

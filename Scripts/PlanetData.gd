@@ -3,16 +3,13 @@ extends Resource
 class_name PlanetData
 
 # Array of noise layers used to generate the terrain
-@export var noise_layers : Array[PlanetNoise] : set = set_noise_layers
+@export var planet_noise : PlanetNoise : set = set_planet_noise
 
 # Base radius of the planet
 @export var radius : float = 1.0 : set = set_radius
 
 # Number of times to subdivide the base icosphere (higher values = more detail)
 @export_range(0, 6, 1) var subdivisions : float = 0 : set = set_subdivisions
-
-# Flag to enable stepped terrain generation
-@export var use_stepped_terrain: bool = false
 
 # Constants for tracking min and max height of the planet for shader parameters
 var min_height : float = INF
@@ -49,7 +46,7 @@ func points_on_planet(points_on_sphere : Array[Vector3]) -> Array[Vector3]:
 	"""
 
 	# Return basic sphere if no noise layers are present
-	if noise_layers.is_empty():
+	if planet_noise == null or planet_noise.noise == null:
 
 		min_height = 0.0
 		max_height = 0.0
@@ -60,55 +57,10 @@ func points_on_planet(points_on_sphere : Array[Vector3]) -> Array[Vector3]:
 		return points
 	
 	
-	var total_elevations = calculate_total_elevations(points_on_sphere)
+	var total_elevations = calculate_stepped_terrain(points_on_sphere)
 
 
 	return calculate_final_points(points_on_sphere, total_elevations)
-
-
-func calculate_total_elevations(points_on_sphere: Array[Vector3]) -> Array[float]:
-
-	"""
-	Calculates the total elevation from all noise layers
-	based on the terrain generation mode
-	"""
-	
-	if use_stepped_terrain:
-		return calculate_stepped_terrain(points_on_sphere)
-	else:
-		return calculate_continous_terrain(points_on_sphere)
-
-
-func calculate_continous_terrain(points_on_sphere: Array[Vector3]) -> Array[float]:
-
-	"""
-	Calculates the total elevation from all noise layers
-	"""
-
-	var base_elevation := 0.0
-	var first_layer := 0.0
-	var total_elevation: Array[float] = []
-	
-	# Process first noise layer (can be used as a mask for subsequent layers)
-	if noise_layers.size() > 0 and noise_layers[0] != null and noise_layers[0].noise != null:
-
-		for point in points_on_sphere:
-			first_layer = calculate_noise(point)
-
-
-			# Calculate base elevation
-			base_elevation = first_layer * noise_layers[0].amplitude
-			base_elevation = max(0.0, base_elevation - noise_layers[0].min_height)
-			base_elevation *= noise_layers[0].strength
-
-			total_elevation.push_back(base_elevation)
-
-	# for i in range(1, noise_layers.size()):
-	# 	var layer_elevation = calculate_layer_elevation(point_on_sphere, i, first_layer, base_elevation)
-		
-	# 	total_elevation += layer_elevation
-
-	return total_elevation
 
 
 
@@ -120,7 +72,7 @@ func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]
 	by clamping the elevation to specific thresholds
 	"""
 
-	if noise_layers[0] == null or noise_layers[0].noise == null:
+	if planet_noise == null or planet_noise.noise == null:
 		var zeros: Array[float] = []
 		zeros.resize(points_on_sphere.size())
 		zeros.fill(0.0)
@@ -145,7 +97,7 @@ func calculate_stepped_terrain(points_on_sphere: Array[Vector3]) -> Array[float]
 		heights.push_back(height)
 
 	# Generate gradient colors for each terrain level
-	generate_gradient_colors_for_terrain_levels(thresholds, noise_layers[0].noise.seed)
+	generate_gradient_colors_for_terrain_levels(thresholds, planet_noise.noise.seed)
 	
 	# Calculate min and max elevation values
 	for point in points_on_sphere:
@@ -180,12 +132,13 @@ func calculate_noise(point_on_sphere: Vector3) -> float:
 	"""
 	Calculates the noise value for a specific point on the sphere
 	"""
-	var sample_point = point_on_sphere * noise_layers[0].scale_factor
-	var first_noise = noise_layers[0].noise.get_noise_3dv(sample_point)
+	var sample_point = point_on_sphere * planet_noise.scale_factor
+	var first_noise = planet_noise.noise.get_noise_3dv(sample_point)
 	
 	
 	# convert noise value to range [0, 1]
 	return (first_noise + 1.0) * 0.5
+
 
 
 func calculate_biome_noise(point_on_sphere: Vector3) -> float:
@@ -202,41 +155,6 @@ func calculate_biome_noise(point_on_sphere: Vector3) -> float:
 	return (biome_noise_val + 1.0) * 0.5
 
 
-func calculate_layer_elevation(point_on_sphere: Vector3, layer_index: int, first_layer: float, base_elevation: float) -> float:
-
-	"""
-	Calculates the combined elevation from multiple noise layers
-	"""
-
-	var layer := noise_layers[layer_index]
-
-	
-
-	if layer == null or layer.noise == null:
-		return 0.0
-	
-	var mask := 1.0
-
-	# Apply first layer as mask if enabled
-	if layer.use_first_layer_as_mask:
-		mask = pow(first_layer, 1.0)
-
-		if base_elevation <= 0:
-			return 0.0
-	
-	# Sample noise and apply elevation
-	var sample_point = point_on_sphere * layer.scale_factor
-	var noise_val = layer.noise.get_noise_3dv(sample_point)
-
-	noise_val = (noise_val + 1.0) * 0.5
-
-	noise_val = noise_val * layer.amplitude * mask
-	noise_val = max(0.0, noise_val - layer.min_height)
-	noise_val *= layer.strength
-
-	return noise_val
-
-	
 
 func calculate_final_points(points_on_sphere: Array[Vector3], heights: Array[float]) -> Array[Vector3]:
 	"""
@@ -288,6 +206,7 @@ func generate_gradient_colors_for_terrain_levels(thresholds: Array[float], noise
 
 			var random_colour = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1), 1.0)
 			gradient.add_point(threshold, random_colour)
+
 
 
 func update_biome_texture() -> ImageTexture:
@@ -362,18 +281,18 @@ func get_biome_gradient_index(points_on_sphere : Array[Vector3]) -> Array[float]
 
 
 
-func set_noise_layers(value):
+func set_planet_noise(value):
 
 	"""
-	Setter for noise_layers that ensures proper signal connections
+	Setter for planet_noise that ensures proper signal connections
 	"""
 
-	noise_layers = value
+	planet_noise = value
 	emit_signal("changed")
 
-	for noise_layer in noise_layers:
-		if noise_layer != null and not noise_layer.is_connected("changed", _on_data_changed):
-			noise_layer.connect("changed", _on_data_changed)
+	if planet_noise != null and not planet_noise.is_connected("changed", _on_data_changed):
+		planet_noise.connect("changed", _on_data_changed)
+
 
 
 func set_biomes(value):
@@ -395,6 +314,7 @@ func set_biomes(value):
 			biome.connect("changed", _on_data_changed)
 
 
+
 func set_biome_noise(value):
 
 	"""
@@ -408,6 +328,7 @@ func set_biome_noise(value):
 		biome_noise.connect("changed", _on_data_changed)
 
 
+
 func set_biome_amplitude(value):
 
 	"""
@@ -417,6 +338,7 @@ func set_biome_amplitude(value):
 
 	biome_amplitude = value
 	emit_signal("changed")
+
 
 
 func set_biome_offset(value):
@@ -430,6 +352,7 @@ func set_biome_offset(value):
 	emit_signal("changed")
 
 
+
 func set_biome_blend(value):
 
 	"""
@@ -439,6 +362,7 @@ func set_biome_blend(value):
 
 	biome_blend = value
 	emit_signal("changed")
+
 
 
 func set_ledge_height(value):
@@ -452,6 +376,7 @@ func set_ledge_height(value):
 	emit_signal("changed")
 
 
+
 func set_radius(value):
 	
 	"""
@@ -461,6 +386,7 @@ func set_radius(value):
 
 	radius = value
 	emit_signal("changed")
+
 
 
 func set_subdivisions(value):
@@ -474,6 +400,7 @@ func set_subdivisions(value):
 	emit_signal("changed")
 
 
+
 func _on_data_changed():
 	
 	"""
@@ -481,6 +408,7 @@ func _on_data_changed():
 	"""
 
 	emit_signal("changed")
+
 
 
 func reset_height():
@@ -491,6 +419,7 @@ func reset_height():
 	
 	min_height = INF
 	max_height = -INF
+
 
 
 func smoothstep(edge0: float, edge1: float, x: float) -> float:

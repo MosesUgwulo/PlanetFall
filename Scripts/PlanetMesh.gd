@@ -34,6 +34,7 @@ func _ready():
 	# Initialize threading variables
 	mutex = Mutex.new()
 	thread = Thread.new()
+	
 
 	# Clears any existing mesh data when the node is ready
 	vertices.clear()
@@ -42,7 +43,7 @@ func _ready():
 
 
 func generate_planet(planet_data : PlanetData):
-
+	
 	"""
 	Main function to generate the planet mesh using the planet data provided
 	Parameters:

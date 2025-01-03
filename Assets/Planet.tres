@@ -11,7 +11,7 @@ domain_warp_fractal_gain = 0.84
 
 [sub_resource type="Gradient" id="Gradient_mrgcv"]
 offsets = PackedFloat32Array(0.01, 0.25, 0.5, 0.75)
-colors = PackedColorArray(0.717619, 0.0253711, 0.408327, 1, 0.0722608, 0.490124, 0.378897, 1, 0.694566, 0.29081, 0.651844, 1, 0.8386, 0.614103, 0.278113, 1)
+colors = PackedColorArray(0.202272, 0.125359, 0.358581, 1, 0.168866, 0.859284, 0.472052, 1, 0.708726, 0.518353, 0.0797473, 1, 0.231873, 0.150086, 0.990496, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_ubij4"]
 gradient = SubResource("Gradient_mrgcv")
@@ -21,24 +21,18 @@ script = ExtResource("1_5fa3i")
 gradientTexture = SubResource("GradientTexture1D_ubij4")
 start_height = 0.315
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_v5x7d"]
-seed = 24653873
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0ti4f"]
 
-[sub_resource type="Resource" id="Resource_nlsbj"]
+[sub_resource type="Resource" id="Resource_5dinv"]
 script = ExtResource("1_arb3o")
-noise = SubResource("FastNoiseLite_v5x7d")
-amplitude = 1.0
-strength = 1.0
-min_height = 0.4
-use_first_layer_as_mask = false
+noise = SubResource("FastNoiseLite_0ti4f")
 scale_factor = 100.0
 
 [resource]
 script = ExtResource("2_3b8vj")
-noise_layers = Array[ExtResource("1_arb3o")]([SubResource("Resource_nlsbj")])
+planet_noise = SubResource("Resource_5dinv")
 radius = 5.0
 subdivisions = 4.0
-use_stepped_terrain = true
 biomes = Array[ExtResource("1_5fa3i")]([SubResource("Resource_rjj2m")])
 biome_noise = SubResource("FastNoiseLite_mwby2")
 biome_amplitude = 0.0

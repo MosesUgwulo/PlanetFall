@@ -16,8 +16,9 @@ var subdivisions : int = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if planet and planet.get_child(0):
+
 		popupPanel.visible = false
-		planet.planet_data = PlanetData.new()
+		# planet.planet_data = PlanetData.new()
 		seedLineEdit.text = str(seedValue)
 
 		var mesh = planet.get_child(0) as PlanetMesh
@@ -30,6 +31,7 @@ func _generate_planet():
 	planet.planet_data.subdivisions = subdivisions
 	seedValue = hash(seedLineEdit.text)
 	planet.noise_seed = seedValue
+	planet.planet_data.planet_noise.noise.seed = seedValue
 	planet._on_planet_changed()
 	
 
