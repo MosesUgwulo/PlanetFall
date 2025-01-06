@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="PlanetData" load_steps=10 format=3 uid="uid://dqfv38cguw26g"]
 
 [ext_resource type="Script" path="res://Scripts/PlanetBiome.gd" id="1_5fa3i"]
-[ext_resource type="Script" path="res://Scripts/PlanetNoise.gd" id="1_arb3o"]
 [ext_resource type="Script" path="res://Scripts/PlanetData.gd" id="2_3b8vj"]
+[ext_resource type="Script" path="res://Scripts/PlanetNoise.gd" id="2_ttmbw"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_mwby2"]
 domain_warp_frequency = 0.345
@@ -21,16 +21,16 @@ script = ExtResource("1_5fa3i")
 gradientTexture = SubResource("GradientTexture1D_ubij4")
 start_height = 0.315
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_0ti4f"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wtmuo"]
 
-[sub_resource type="Resource" id="Resource_5dinv"]
-script = ExtResource("1_arb3o")
-noise = SubResource("FastNoiseLite_0ti4f")
+[sub_resource type="Resource" id="Resource_6upfm"]
+script = ExtResource("2_ttmbw")
+noise = SubResource("FastNoiseLite_wtmuo")
 scale_factor = 100.0
 
 [resource]
 script = ExtResource("2_3b8vj")
-planet_noise = SubResource("Resource_5dinv")
+planet_noise = SubResource("Resource_6upfm")
 radius = 5.0
 subdivisions = 4.0
 biomes = Array[ExtResource("1_5fa3i")]([SubResource("Resource_rjj2m")])

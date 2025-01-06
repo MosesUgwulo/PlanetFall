@@ -3,7 +3,7 @@ extends Resource
 class_name PlanetData
 
 # Array of noise layers used to generate the terrain
-@export var planet_noise : PlanetNoise : set = set_planet_noise
+@export var planet_noise : PlanetNoise = PlanetNoise.new() : set = set_planet_noise
 
 # Base radius of the planet
 @export var radius : float = 1.0 : set = set_radius
@@ -30,7 +30,7 @@ var max_height : float = -INF
 @export var num_terrain_levels: int = 4 
 @export var min_terrain_height: float = 0.0
 @export var max_terrain_height: float = 1.0
-@export var ledge_height : float = 0.5 : set = set_ledge_height
+@export var ledge_height : float = 0.2 : set = set_ledge_height
 
 
 
@@ -189,8 +189,12 @@ func generate_gradient_colors_for_terrain_levels(thresholds: Array[float], noise
 	based on the number of thresholds and a noise seed
 	"""
 
+	if biomes.is_empty():
+		return
+
 	if biomes[0].gradientTexture:
 		var gradient = biomes[0].gradientTexture.gradient
+		
 
 		while gradient.get_point_count() > 1:
 			gradient.remove_point(1)
@@ -206,6 +210,8 @@ func generate_gradient_colors_for_terrain_levels(thresholds: Array[float], noise
 
 			var random_colour = Color(rng.randf_range(0, 1), rng.randf_range(0, 1), rng.randf_range(0, 1), 1.0)
 			gradient.add_point(threshold, random_colour)
+	
+	
 
 
 

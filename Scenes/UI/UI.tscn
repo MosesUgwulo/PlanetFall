@@ -41,26 +41,26 @@ theme_override_constants/margin_right = 20
 [node name="Settings" type="VBoxContainer" parent="RootControl/MarginContainer"]
 layout_mode = 2
 
-[node name="Noise Layers Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
+[node name="Noise Layer Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
 layout_mode = 2
 tooltip_text = "Add Noise Layers to the planet"
 
-[node name="Noise Layers Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Layers Setting"]
+[node name="Noise Layer Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Layer Setting"]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Affects how big the planet is"
 
-[node name="Noise Layers" type="Label" parent="RootControl/MarginContainer/Settings/Noise Layers Setting/Noise Layers Container"]
+[node name="Noise Layer" type="Label" parent="RootControl/MarginContainer/Settings/Noise Layer Setting/Noise Layer Container"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "Noise Layers"
+text = "Noise Layer"
 uppercase = true
 
-[node name="Add Noise Layer Button" type="Button" parent="RootControl/MarginContainer/Settings/Noise Layers Setting"]
+[node name="Add Noise Layer Button" type="Button" parent="RootControl/MarginContainer/Settings/Noise Layer Setting"]
 custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Add Noise Layer"
+text = "Edit Noise Layer"
 
 [node name="Seed Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
 layout_mode = 2
@@ -145,10 +145,10 @@ grow_vertical = 2
 
 [node name="PopupPanel" type="PopupPanel" parent="Control"]
 initial_position = 1
-size = Vector2i(500, 500)
+size = Vector2i(500, 370)
 visible = true
 borderless = false
-min_size = Vector2i(500, 500)
+min_size = Vector2i(500, 0)
 
 [node name="Control" type="Control" parent="Control/PopupPanel"]
 layout_mode = 3
@@ -156,29 +156,74 @@ anchors_preset = 0
 offset_left = 4.0
 offset_top = 4.0
 offset_right = 496.0
-offset_bottom = 496.0
+offset_bottom = 366.0
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Control/PopupPanel/Control"]
-layout_mode = 0
-offset_right = 500.0
-offset_bottom = 500.0
+[node name="MarginContainer" type="MarginContainer" parent="Control/PopupPanel/Control"]
+layout_mode = 1
+offset_right = 199.0
+offset_bottom = 105.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/PopupPanel/Control/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/PopupPanel/Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Toggle Settings" type="Button" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "▶ Noise Settings"
+
+[node name="Content" type="VBoxContainer" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Noise Type Setting" type="HBoxContainer" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Content"]
+layout_mode = 2
+
+[node name="Noise Type Container" type="VBoxContainer" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Content/Noise Type Setting"]
+layout_mode = 2
+
+[node name="Noise Type Label" type="Label" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Content/Noise Type Setting/Noise Type Container"]
+layout_mode = 2
+text = "Noise Type"
+
+[node name="Noise Types" type="OptionButton" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Content/Noise Type Setting"]
+custom_minimum_size = Vector2(100, 25)
+layout_mode = 2
+fit_to_longest_item = false
+item_count = 6
+popup/item_0/text = "Simplex"
+popup/item_1/text = "Simplex Smooth"
+popup/item_1/id = 1
+popup/item_2/text = "Cellular"
+popup/item_2/id = 2
+popup/item_3/text = "Perlin"
+popup/item_3/id = 3
+popup/item_4/text = "Value Cubic"
+popup/item_4/id = 4
+popup/item_5/text = "Value"
+popup/item_5/id = 5
+
+[node name="Scale Factor Setting" type="HBoxContainer" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Scale Factor Container" type="VBoxContainer" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Scale Factor Setting"]
+layout_mode = 2
+
+[node name="Scale Factor" type="Label" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Scale Factor Setting/Scale Factor Container"]
+layout_mode = 2
+text = "Scale Factor"
+
+[node name="Scale Factor Value" type="SpinBox" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Scale Factor Setting"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+min_value = 1.0
+step = 0.1
+value = 1.0
 
-[node name="Button" type="Button" parent="Control/PopupPanel/Control"]
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 0
-offset_left = 200.0
-offset_top = 400.0
-offset_right = 300.0
-offset_bottom = 500.0
-text = "Add"
-
-[connection signal="pressed" from="RootControl/MarginContainer/Settings/Noise Layers Setting/Add Noise Layer Button" to="." method="_on_add_noise_layer_button_pressed"]
+[connection signal="pressed" from="RootControl/MarginContainer/Settings/Noise Layer Setting/Add Noise Layer Button" to="." method="_on_edit_noise_layer_button_pressed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Radius Setting/Radius Value" to="." method="_on_radius_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Subdivisions Setting/Subdivisions Value" to="." method="_on_subdivisions_value_changed"]
 [connection signal="pressed" from="RootControl/MarginContainer/Settings/GenerateBtnVBox/Generate Button" to="." method="_generate_planet"]
-[connection signal="pressed" from="Control/PopupPanel/Control/Button" to="." method="_add_layer"]
+[connection signal="pressed" from="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Toggle Settings" to="." method="_on_noise_settings_button_toggled"]
+[connection signal="item_selected" from="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Content/Noise Type Setting/Noise Types" to="." method="_on_noise_types_item_selected"]
+[connection signal="value_changed" from="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Scale Factor Setting/Scale Factor Value" to="." method="_on_scale_factor_value_changed"]

@@ -3,7 +3,7 @@ extends Node
 class_name Planet
 
 # Reference to the planet data resource
-@export var planet_data : PlanetData : set = set_planet_data
+@export var planet_data : PlanetData = PlanetData.new() : set = set_planet_data
 @export var noise_seed : int = 0
 
 

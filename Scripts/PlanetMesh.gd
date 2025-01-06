@@ -63,6 +63,8 @@ func generate_planet(planet_data : PlanetData):
 
 
 func _generate_planet_thread(planet_data : PlanetData):
+
+	
 	# Reset min and max height tracking in planet data
 	planet_data.reset_height()
 
