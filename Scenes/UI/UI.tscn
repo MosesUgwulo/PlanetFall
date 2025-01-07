@@ -41,45 +41,114 @@ theme_override_constants/margin_right = 20
 [node name="Settings" type="VBoxContainer" parent="RootControl/MarginContainer"]
 layout_mode = 2
 
-[node name="Noise Layer Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
+[node name="Noise Settings Button" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
 layout_mode = 2
 tooltip_text = "Add Noise Layers to the planet"
 
-[node name="Noise Layer Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Layer Setting"]
+[node name="Noise Settings" type="Button" parent="RootControl/MarginContainer/Settings/Noise Settings Button"]
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Affects how big the planet is"
+text = "▶ Noise Settings"
 
-[node name="Noise Layer" type="Label" parent="RootControl/MarginContainer/Settings/Noise Layer Setting/Noise Layer Container"]
+[node name="Noise Settings Dropdown" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
+layout_mode = 2
+
+[node name="Noise Settings Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Noise Type Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
+layout_mode = 2
+
+[node name="Noise Type Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Noise Type Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Noise Type Label" type="Label" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Noise Type Setting/Noise Type Container"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "Noise Layer"
+text = "Noise Type"
 uppercase = true
 
-[node name="Add Noise Layer Button" type="Button" parent="RootControl/MarginContainer/Settings/Noise Layer Setting"]
-custom_minimum_size = Vector2(170, 0)
+[node name="Noise Types" type="OptionButton" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Noise Type Setting"]
+custom_minimum_size = Vector2(170, 31)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Edit Noise Layer"
+size_flags_vertical = 4
+selected = 1
+fit_to_longest_item = false
+item_count = 6
+popup/item_0/text = "Simplex"
+popup/item_1/text = "Simplex Smooth"
+popup/item_1/id = 1
+popup/item_2/text = "Cellular"
+popup/item_2/id = 2
+popup/item_3/text = "Perlin"
+popup/item_3/id = 3
+popup/item_4/text = "Value Cubic"
+popup/item_4/id = 4
+popup/item_5/text = "Value"
+popup/item_5/id = 5
 
-[node name="Seed Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
+[node name="Seed Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
 layout_mode = 2
 tooltip_text = "Generates a different looking planet"
 
-[node name="Seed Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Seed Setting"]
+[node name="Seed Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Seed Setting"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Seed" type="Label" parent="RootControl/MarginContainer/Settings/Seed Setting/Seed Container"]
+[node name="Seed" type="Label" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Seed Setting/Seed Container"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Seed"
 uppercase = true
 
-[node name="Seed Value" type="LineEdit" parent="RootControl/MarginContainer/Settings/Seed Setting"]
+[node name="Seed Value" type="LineEdit" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Seed Setting"]
 custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="Frequency Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
+layout_mode = 2
+tooltip_text = "Generates a different looking planet"
+
+[node name="Frequency Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Frequency" type="Label" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting/Frequency Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Frequency"
+uppercase = true
+
+[node name="Frequency Value" type="HSlider" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting"]
+custom_minimum_size = Vector2(170, 31)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Scale Factor Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
+layout_mode = 2
+
+[node name="Scale Factor Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Scale Factor Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Scale Factor" type="Label" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Scale Factor Setting/Scale Factor Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Scale Factor"
+uppercase = true
+
+[node name="Scale Factor Value" type="SpinBox" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Scale Factor Setting"]
+custom_minimum_size = Vector2(170, 31)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 1.0
+step = 0.1
+value = 1.0
 
 [node name="Radius Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
 layout_mode = 2
@@ -114,7 +183,6 @@ size_flags_horizontal = 3
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Subdivisions"
-horizontal_alignment = 1
 uppercase = true
 
 [node name="Subdivisions Value" type="SpinBox" parent="RootControl/MarginContainer/Settings/Subdivisions Setting"]
@@ -133,97 +201,10 @@ size_flags_vertical = 3
 theme_override_font_sizes/font_size = 32
 text = "Generate"
 
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="PopupPanel" type="PopupPanel" parent="Control"]
-initial_position = 1
-size = Vector2i(500, 370)
-visible = true
-borderless = false
-min_size = Vector2i(500, 0)
-
-[node name="Control" type="Control" parent="Control/PopupPanel"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 496.0
-offset_bottom = 366.0
-
-[node name="MarginContainer" type="MarginContainer" parent="Control/PopupPanel/Control"]
-layout_mode = 1
-offset_right = 199.0
-offset_bottom = 105.0
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/PopupPanel/Control/MarginContainer"]
-layout_mode = 2
-
-[node name="Toggle Settings" type="Button" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "▶ Noise Settings"
-
-[node name="Content" type="VBoxContainer" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Noise Type Setting" type="HBoxContainer" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Content"]
-layout_mode = 2
-
-[node name="Noise Type Container" type="VBoxContainer" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Content/Noise Type Setting"]
-layout_mode = 2
-
-[node name="Noise Type Label" type="Label" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Content/Noise Type Setting/Noise Type Container"]
-layout_mode = 2
-text = "Noise Type"
-
-[node name="Noise Types" type="OptionButton" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Content/Noise Type Setting"]
-custom_minimum_size = Vector2(100, 25)
-layout_mode = 2
-fit_to_longest_item = false
-item_count = 6
-popup/item_0/text = "Simplex"
-popup/item_1/text = "Simplex Smooth"
-popup/item_1/id = 1
-popup/item_2/text = "Cellular"
-popup/item_2/id = 2
-popup/item_3/text = "Perlin"
-popup/item_3/id = 3
-popup/item_4/text = "Value Cubic"
-popup/item_4/id = 4
-popup/item_5/text = "Value"
-popup/item_5/id = 5
-
-[node name="Scale Factor Setting" type="HBoxContainer" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Scale Factor Container" type="VBoxContainer" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Scale Factor Setting"]
-layout_mode = 2
-
-[node name="Scale Factor" type="Label" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Scale Factor Setting/Scale Factor Container"]
-layout_mode = 2
-text = "Scale Factor"
-
-[node name="Scale Factor Value" type="SpinBox" parent="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Scale Factor Setting"]
-layout_mode = 2
-size_flags_horizontal = 3
-min_value = 1.0
-step = 0.1
-value = 1.0
-
-[connection signal="pressed" from="RootControl/MarginContainer/Settings/Noise Layer Setting/Add Noise Layer Button" to="." method="_on_edit_noise_layer_button_pressed"]
+[connection signal="pressed" from="RootControl/MarginContainer/Settings/Noise Settings Button/Noise Settings" to="." method="_on_noise_settings_button_toggled"]
+[connection signal="item_selected" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Noise Type Setting/Noise Types" to="." method="_on_noise_types_item_selected"]
+[connection signal="text_changed" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Seed Setting/Seed Value" to="." method="_on_seed_value_text_changed"]
+[connection signal="value_changed" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Scale Factor Setting/Scale Factor Value" to="." method="_on_scale_factor_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Radius Setting/Radius Value" to="." method="_on_radius_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Subdivisions Setting/Subdivisions Value" to="." method="_on_subdivisions_value_changed"]
 [connection signal="pressed" from="RootControl/MarginContainer/Settings/GenerateBtnVBox/Generate Button" to="." method="_generate_planet"]
-[connection signal="pressed" from="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Toggle Settings" to="." method="_on_noise_settings_button_toggled"]
-[connection signal="item_selected" from="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Content/Noise Type Setting/Noise Types" to="." method="_on_noise_types_item_selected"]
-[connection signal="value_changed" from="Control/PopupPanel/Control/MarginContainer/VBoxContainer/Scale Factor Setting/Scale Factor Value" to="." method="_on_scale_factor_value_changed"]
