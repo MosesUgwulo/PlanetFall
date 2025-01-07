@@ -123,10 +123,19 @@ theme_override_font_sizes/font_size = 20
 text = "Frequency"
 uppercase = true
 
+[node name="Frequency Label" type="Label" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0.0001"
+
 [node name="Frequency Value" type="HSlider" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting"]
 custom_minimum_size = Vector2(170, 31)
 layout_mode = 2
 size_flags_horizontal = 3
+min_value = 1.0
+max_value = 10000.0
+step = 0.0
+value = 1.0
 
 [node name="Scale Factor Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
 layout_mode = 2
@@ -204,6 +213,7 @@ text = "Generate"
 [connection signal="pressed" from="RootControl/MarginContainer/Settings/Noise Settings Button/Noise Settings" to="." method="_on_noise_settings_button_toggled"]
 [connection signal="item_selected" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Noise Type Setting/Noise Types" to="." method="_on_noise_types_item_selected"]
 [connection signal="text_changed" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Seed Setting/Seed Value" to="." method="_on_seed_value_text_changed"]
+[connection signal="value_changed" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting/Frequency Value" to="." method="_on_frequency_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Scale Factor Setting/Scale Factor Value" to="." method="_on_scale_factor_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Radius Setting/Radius Value" to="." method="_on_radius_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Subdivisions Setting/Subdivisions Value" to="." method="_on_subdivisions_value_changed"]

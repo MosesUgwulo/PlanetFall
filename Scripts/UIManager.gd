@@ -7,7 +7,8 @@ extends CanvasLayer
 @onready var noise_settings_dropdown : HBoxContainer = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown"
 @onready var seedLineEdit : LineEdit = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Seed Setting/Seed Value"
 @onready var scaleFactorSpinBox : SpinBox = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Scale Factor Setting/Scale Factor Value"
-
+@onready var frequencyLabel : Label = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting/Frequency Label"
+@onready var frequencySlider : HSlider = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting/Frequency Value"
 
 @onready var generateBtn : Button = $"RootControl/MarginContainer/Settings/GenerateBtnVBox/Generate Button"
 
@@ -15,6 +16,7 @@ extends CanvasLayer
 
 # Editible values
 var seedValue : int = 0
+var frequency : float = 0.01
 var scaleFactor : float = 1.0
 var radius : float = 1.0
 var subdivisions : int = 0
@@ -23,6 +25,13 @@ var subdivisions : int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+
+	frequencySlider.min_value = 0.0001
+	frequencySlider.max_value = 1.0
+	frequencySlider.step = 0.0001
+	frequencySlider.value = 0.01
+	frequencyLabel.text = str(frequencySlider.value)
+
 	if planet and planet.get_child(0):
 
 		# planet.planet_data = PlanetData.new()
@@ -99,3 +108,10 @@ func _on_generate_status_changed(is_generating : bool):
 
 
 
+
+
+func _on_frequency_value_changed(value : float):
+	
+
+	# print("Frequency: ", value)
+	frequencyLabel.text = str(value)
