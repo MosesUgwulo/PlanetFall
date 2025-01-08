@@ -6,13 +6,12 @@ extends CanvasLayer
 @onready var noise_settings_btn : Button = $"RootControl/MarginContainer/Settings/Noise Settings Button/Noise Settings"
 @onready var noise_settings_dropdown : HBoxContainer = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown"
 @onready var seedLineEdit : LineEdit = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Seed Setting/Seed Value"
-@onready var scaleFactorSpinBox : SpinBox = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Scale Factor Setting/Scale Factor Value"
-@onready var frequencyLabel : Label = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting/Frequency Label"
+@onready var frequencyLineEdit : LineEdit = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting/Frequency LineEdit"
 @onready var frequencySlider : HSlider = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting/Frequency Value"
 
 @onready var generateBtn : Button = $"RootControl/MarginContainer/Settings/GenerateBtnVBox/Generate Button"
 
-
+# TODO: ADD TOOL TIPS TO EVERYTHING
 
 # Editible values
 var seedValue : int = 0
@@ -30,11 +29,11 @@ func _ready():
 	frequencySlider.max_value = 1.0
 	frequencySlider.step = 0.0001
 	frequencySlider.value = 0.01
-	frequencyLabel.text = str(frequencySlider.value)
+	frequencyLineEdit.text = str(frequencySlider.value)
 
 	if planet and planet.get_child(0):
 
-		# planet.planet_data = PlanetData.new()
+		planet.planet_data = PlanetData.new()
 		seedLineEdit.text = str(seedValue)
 
 
@@ -48,11 +47,12 @@ func _ready():
 
 func _generate_planet():
 	planet.planet_data.planet_noise.noise.seed = seedValue
+	planet.planet_data.planet_noise.noise.frequency = frequency
 	planet.planet_data.planet_noise.scale_factor = scaleFactor
 
 	planet.planet_data.radius = radius
 	planet.planet_data.subdivisions = subdivisions
-
+	
 	planet._on_planet_changed()
 
 
@@ -87,8 +87,60 @@ func _on_seed_value_text_changed(new_text):
 
 
 
-func _on_scale_factor_value_changed(value:float):
+func _on_frequency_value_changed(value : float):
+	frequencyLineEdit.text = str(value)
+	frequency = value
+
+
+
+func _on_frequency_line_edit_text_changed(new_text : String):
+	frequencySlider.value = float(new_text)
+	frequency = frequencySlider.value
+
+
+
+func _on_frequency_line_edit_focus_exited():
+	frequencySlider.value = float(frequencyLineEdit.text)
+	frequency = frequencySlider.value
+
+
+
+func _on_scale_factor_value_changed(value : float):
 	scaleFactor = value
+
+
+
+func _on_fractal_types_item_selected(index : int):
+	match index:
+		0:
+			planet.planet_data.planet_noise.noise.fractal_type = FastNoiseLite.FRACTAL_NONE
+		1:
+			planet.planet_data.planet_noise.noise.fractal_type = FastNoiseLite.FRACTAL_FBM
+		2:
+			planet.planet_data.planet_noise.noise.fractal_type = FastNoiseLite.FRACTAL_RIDGED
+		_:
+			planet.planet_data.planet_noise.noise.fractal_type = FastNoiseLite.FRACTAL_FBM
+
+
+
+func _on_octaves_value_changed(value : int):
+	planet.planet_data.planet_noise.noise.fractal_octaves = value
+
+
+
+
+func _on_lacunarity_value_changed(value : float):
+	planet.planet_data.planet_noise.noise.fractal_lacunarity = value
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -101,6 +153,7 @@ func _on_subdivisions_value_changed(value : int):
 	subdivisions = value
 
 
+
 func _on_generate_status_changed(is_generating : bool):
 	if generateBtn:
 		generateBtn.disabled = is_generating
@@ -110,8 +163,10 @@ func _on_generate_status_changed(is_generating : bool):
 
 
 
-func _on_frequency_value_changed(value : float):
-	
 
-	# print("Frequency: ", value)
-	frequencyLabel.text = str(value)
+
+
+
+
+
+
