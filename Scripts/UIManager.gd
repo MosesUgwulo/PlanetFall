@@ -17,6 +17,11 @@ extends CanvasLayer
 var seedValue : int = 0
 var frequency : float = 0.01
 var scaleFactor : float = 1.0
+
+var fractal_octaves : int = 5
+var fractal_lacunarity : float = 2.0
+var fractal_gain : float = 0.5
+
 var radius : float = 1.0
 var subdivisions : int = 0
 
@@ -33,7 +38,7 @@ func _ready():
 
 	if planet and planet.get_child(0):
 
-		planet.planet_data = PlanetData.new()
+		# planet.planet_data = PlanetData.new()
 		seedLineEdit.text = str(seedValue)
 
 
@@ -49,6 +54,11 @@ func _generate_planet():
 	planet.planet_data.planet_noise.noise.seed = seedValue
 	planet.planet_data.planet_noise.noise.frequency = frequency
 	planet.planet_data.planet_noise.scale_factor = scaleFactor
+
+	planet.planet_data.planet_noise.noise.fractal_octaves = fractal_octaves
+	planet.planet_data.planet_noise.noise.fractal_lacunarity = fractal_lacunarity
+	planet.planet_data.planet_noise.noise.fractal_gain = fractal_gain
+	print(planet.planet_data.planet_noise.noise.fractal_gain)
 
 	planet.planet_data.radius = radius
 	planet.planet_data.subdivisions = subdivisions
@@ -124,16 +134,18 @@ func _on_fractal_types_item_selected(index : int):
 
 
 func _on_octaves_value_changed(value : int):
-	planet.planet_data.planet_noise.noise.fractal_octaves = value
+	fractal_octaves = value
 
 
 
 
 func _on_lacunarity_value_changed(value : float):
-	planet.planet_data.planet_noise.noise.fractal_lacunarity = value
+	fractal_lacunarity = value
 
 
 
+func _on_gain_value_changed(value:float):
+	fractal_gain = value
 
 
 
@@ -158,6 +170,9 @@ func _on_generate_status_changed(is_generating : bool):
 	if generateBtn:
 		generateBtn.disabled = is_generating
 		generateBtn.text = "Generating..." if is_generating else "Generate"
+
+
+
 
 
 
