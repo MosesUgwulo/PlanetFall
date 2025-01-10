@@ -22,6 +22,7 @@ gradientTexture = SubResource("GradientTexture1D_ubij4")
 start_height = 0.315
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_wtmuo"]
+metadata/_preview_in_3d_space_ = true
 
 [sub_resource type="Resource" id="Resource_6upfm"]
 script = ExtResource("2_ttmbw")

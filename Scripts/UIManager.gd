@@ -3,24 +3,27 @@ extends CanvasLayer
 @export var planet : Planet
 
 # ============================= NOISE SETTINGS =============================
-@onready var noise_settings_btn : Button = $"RootControl/MarginContainer/Settings/Noise Settings Button/Noise Settings"
-@onready var noise_settings_dropdown : HBoxContainer = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown"
-@onready var seedLineEdit : LineEdit = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Seed Setting/Seed Value"
-@onready var frequencyLineEdit : LineEdit = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting/Frequency LineEdit"
-@onready var frequencySlider : HSlider = $"RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting/Frequency Value"
+@onready var noise_settings_btn : Button = get_node("RootControl/MarginContainer/Settings/Noise Settings Button/Noise Settings")
+@onready var noise_settings_dropdown : HBoxContainer = get_node("RootControl/MarginContainer/Settings/Noise Settings Dropdown")
+@onready var seedLineEdit : LineEdit = get_node("RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Seed Setting/Seed Value")
+@onready var frequencyLineEdit : LineEdit = get_node("RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting/Frequency LineEdit")
+@onready var frequencySlider : HSlider = get_node("RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting/Frequency Value")
+@onready var weightedStrengthLineEdit : LineEdit = get_node("RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Weighted Strength Setting/Weighted Strength LineEdit")
+@onready var weightedStrengthSlider : HSlider = get_node("RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Weighted Strength Setting/Weighted Strength Value")
 
-@onready var generateBtn : Button = $"RootControl/MarginContainer/Settings/GenerateBtnVBox/Generate Button"
+@onready var generateBtn : Button = get_node("RootControl/MarginContainer/Settings/GenerateBtnVBox/Generate Button")
 
 # TODO: ADD TOOL TIPS TO EVERYTHING
 
 # Editible values
 var seedValue : int = 0
 var frequency : float = 0.01
-var scaleFactor : float = 1.0
+var scale_factor : float = 1.0
 
 var fractal_octaves : int = 5
 var fractal_lacunarity : float = 2.0
 var fractal_gain : float = 0.5
+var fractal_weighted_strength : float = 0.0
 
 var radius : float = 1.0
 var subdivisions : int = 0
@@ -53,12 +56,12 @@ func _ready():
 func _generate_planet():
 	planet.planet_data.planet_noise.noise.seed = seedValue
 	planet.planet_data.planet_noise.noise.frequency = frequency
-	planet.planet_data.planet_noise.scale_factor = scaleFactor
+	planet.planet_data.planet_noise.scale_factor = scale_factor
 
 	planet.planet_data.planet_noise.noise.fractal_octaves = fractal_octaves
 	planet.planet_data.planet_noise.noise.fractal_lacunarity = fractal_lacunarity
 	planet.planet_data.planet_noise.noise.fractal_gain = fractal_gain
-	print(planet.planet_data.planet_noise.noise.fractal_gain)
+	planet.planet_data.planet_noise.noise.fractal_weighted_strength = fractal_weighted_strength
 
 	planet.planet_data.radius = radius
 	planet.planet_data.subdivisions = subdivisions
@@ -116,7 +119,7 @@ func _on_frequency_line_edit_focus_exited():
 
 
 func _on_scale_factor_value_changed(value : float):
-	scaleFactor = value
+	scale_factor = value
 
 
 
@@ -138,7 +141,6 @@ func _on_octaves_value_changed(value : int):
 
 
 
-
 func _on_lacunarity_value_changed(value : float):
 	fractal_lacunarity = value
 
@@ -146,6 +148,26 @@ func _on_lacunarity_value_changed(value : float):
 
 func _on_gain_value_changed(value:float):
 	fractal_gain = value
+
+
+
+func _on_weighted_strength_line_edit_text_submitted(new_text : String):
+	weightedStrengthSlider.value = float(new_text)
+	fractal_weighted_strength = weightedStrengthSlider.value
+
+
+
+func _on_weighted_strength_line_edit_focus_exited():
+	weightedStrengthSlider.value = float(weightedStrengthLineEdit.text)
+	fractal_weighted_strength = weightedStrengthSlider.value
+
+
+
+func _on_weighted_strength_value_changed(value : float):
+	weightedStrengthLineEdit.text = str(value)
+	fractal_weighted_strength = value
+
+
 
 
 
@@ -170,6 +192,15 @@ func _on_generate_status_changed(is_generating : bool):
 	if generateBtn:
 		generateBtn.disabled = is_generating
 		generateBtn.text = "Generating..." if is_generating else "Generate"
+
+
+
+
+
+
+
+
+
 
 
 

@@ -37,8 +37,8 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -332.0
-offset_bottom = 213.0
+offset_left = -476.0
+offset_bottom = 525.0
 grow_horizontal = 0
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
@@ -48,11 +48,11 @@ layout_mode = 2
 
 [node name="Noise Settings Button" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
 layout_mode = 2
-tooltip_text = "Add Noise Layers to the planet"
 
 [node name="Noise Settings" type="Button" parent="RootControl/MarginContainer/Settings/Noise Settings Button"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Edit noise settings on the noise planet"
 text = "▶ Noise Settings"
 
 [node name="Noise Settings Dropdown" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
@@ -64,6 +64,19 @@ size_flags_horizontal = 3
 
 [node name="Noise Type Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
 layout_mode = 2
+tooltip_text = "Changes the noise algorithm being used:
+
+Type Simplex: Creates smoother, more natural patterns with fewer visible lines compared to Perlin noise.
+
+Type Simplex Smooth: A smoother, higher-quality version of Simplex noise, but slower to generate.
+
+Type Cellular: Creates patterns with regions or cells, often used for textures like cracked surfaces or organic structures.
+
+Type Perlin: A more detailed version of Value noise, adding natural-looking texture; slower to compute.
+
+Type Value: Generates patterns by assigning random values to grid points and blending them smoothly.
+
+Type Value Cubic: Similar to Value noise but creates sharper and more varied peaks and valleys; slightly slower."
 
 [node name="Noise Type Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Noise Type Setting"]
 layout_mode = 2
@@ -97,7 +110,7 @@ popup/item_5/id = 5
 
 [node name="Seed Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
 layout_mode = 2
-tooltip_text = "Generates a different looking planet"
+tooltip_text = "The random number seed for all noise types."
 
 [node name="Seed Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Seed Setting"]
 layout_mode = 2
@@ -116,7 +129,7 @@ size_flags_horizontal = 3
 
 [node name="Frequency Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
 layout_mode = 2
-tooltip_text = "Generates a different looking planet"
+tooltip_text = "Controls the level of detail in the noise. Low values make it smoother; high values make it rougher."
 
 [node name="Frequency Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting"]
 layout_mode = 2
@@ -130,7 +143,6 @@ uppercase = true
 
 [node name="Frequency LineEdit" type="LineEdit" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting"]
 layout_mode = 2
-size_flags_horizontal = 3
 text = "0.0001"
 
 [node name="Frequency Value" type="HSlider" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Frequency Setting"]
@@ -145,6 +157,7 @@ exp_edit = true
 
 [node name="Scale Factor Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
 layout_mode = 2
+tooltip_text = "Adjusts how closely the planet matches the noise pattern. A value of 100 perfectly matches the noise; lower values make it look less like the noise."
 
 [node name="Scale Factor Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Scale Factor Setting"]
 layout_mode = 2
@@ -175,6 +188,13 @@ uppercase = true
 
 [node name="Fractal Type Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
 layout_mode = 2
+tooltip_text = "Defines how multiple noise layers (octaves) are combined to create a fractal pattern.
+
+None: No fractal effect, single-layer noise.
+
+FBM: Uses Fractional Brownian Motion for smooth, layered fractal patterns.
+
+Ridged: Combines layers to create a sharp, \"ridged\" appearance."
 
 [node name="Fractal Type Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Fractal Type Setting"]
 layout_mode = 2
@@ -202,6 +222,7 @@ popup/item_2/id = 2
 
 [node name="Octaves Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
 layout_mode = 2
+tooltip_text = "The number of noise layers combined to create the final fractal pattern. More layers add detail."
 
 [node name="Octaves Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Octaves Setting"]
 layout_mode = 2
@@ -224,6 +245,7 @@ value = 5.0
 
 [node name="Lacunarity Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
 layout_mode = 2
+tooltip_text = "Controls how much detail is added with each layer of noise. Higher values create finer, rougher textures."
 
 [node name="Lacunarity Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Lacunarity Setting"]
 layout_mode = 2
@@ -246,6 +268,7 @@ value = 2.0
 
 [node name="Gain Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
 layout_mode = 2
+tooltip_text = "Sets the influence of each noise layer. Lower values emphasize smoother base layers, while higher values highlight finer, detailed layers."
 
 [node name="Gain Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Gain Setting"]
 layout_mode = 2
@@ -267,9 +290,35 @@ max_value = 5.0
 step = 0.1
 value = 0.5
 
+[node name="Weighted Strength Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container"]
+layout_mode = 2
+tooltip_text = "Reduces the influence of higher layers when lower layers have a strong effect."
+
+[node name="Weighted Strength Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Weighted Strength Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Weighted Strength Label" type="Label" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Weighted Strength Setting/Weighted Strength Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Weighted Strength
+"
+uppercase = true
+
+[node name="Weighted Strength LineEdit" type="LineEdit" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Weighted Strength Setting"]
+layout_mode = 2
+text = "0"
+
+[node name="Weighted Strength Value" type="HSlider" parent="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Weighted Strength Setting"]
+custom_minimum_size = Vector2(170, 31)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+
 [node name="Radius Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
 layout_mode = 2
-tooltip_text = "Affects how big the planet is"
+tooltip_text = "Sets the size of the planet. Larger values create bigger planets."
 
 [node name="Radius Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Radius Setting"]
 layout_mode = 2
@@ -290,7 +339,7 @@ value = 1.0
 
 [node name="Subdivisions Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
 layout_mode = 2
-tooltip_text = "Affects how detailed the planet is"
+tooltip_text = "Controls the planet's detail level. Higher values add more detail but increase loading time; lower values are faster but less detailed."
 
 [node name="Subdivisions Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Subdivisions Setting"]
 layout_mode = 2
@@ -329,6 +378,9 @@ text = "Generate"
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Octaves Setting/Octaves Value" to="." method="_on_octaves_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Lacunarity Setting/Lacunarity Value" to="." method="_on_lacunarity_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Gain Setting/Gain Value" to="." method="_on_gain_value_changed"]
+[connection signal="focus_exited" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Weighted Strength Setting/Weighted Strength LineEdit" to="." method="_on_weighted_strength_line_edit_focus_exited"]
+[connection signal="text_submitted" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Weighted Strength Setting/Weighted Strength LineEdit" to="." method="_on_weighted_strength_line_edit_text_submitted"]
+[connection signal="value_changed" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Weighted Strength Setting/Weighted Strength Value" to="." method="_on_weighted_strength_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Radius Setting/Radius Value" to="." method="_on_radius_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Subdivisions Setting/Subdivisions Value" to="." method="_on_subdivisions_value_changed"]
 [connection signal="pressed" from="RootControl/MarginContainer/Settings/GenerateBtnVBox/Generate Button" to="." method="_generate_planet"]
