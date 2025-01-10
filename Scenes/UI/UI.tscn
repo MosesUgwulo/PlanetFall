@@ -316,6 +316,276 @@ size_flags_horizontal = 3
 max_value = 1.0
 step = 0.01
 
+[node name="Biome Settings Button" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
+layout_mode = 2
+
+[node name="Biome Settings" type="Button" parent="RootControl/MarginContainer/Settings/Biome Settings Button"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Edit noise settings on the noise planet"
+text = "▶ Biome Settings"
+
+[node name="Biome Settings Dropdown" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
+layout_mode = 2
+
+[node name="Biome Settings Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Noise Type Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container"]
+layout_mode = 2
+tooltip_text = "Changes the noise algorithm being used:
+
+Type Simplex: Creates smoother, more natural patterns with fewer visible lines compared to Perlin noise.
+
+Type Simplex Smooth: A smoother, higher-quality version of Simplex noise, but slower to generate.
+
+Type Cellular: Creates patterns with regions or cells, often used for textures like cracked surfaces or organic structures.
+
+Type Perlin: A more detailed version of Value noise, adding natural-looking texture; slower to compute.
+
+Type Value: Generates patterns by assigning random values to grid points and blending them smoothly.
+
+Type Value Cubic: Similar to Value noise but creates sharper and more varied peaks and valleys; slightly slower."
+
+[node name="Noise Type Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Noise Type Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Noise Type Label" type="Label" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Noise Type Setting/Noise Type Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Noise Type"
+uppercase = true
+
+[node name="Noise Types" type="OptionButton" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Noise Type Setting"]
+custom_minimum_size = Vector2(170, 31)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+selected = 1
+fit_to_longest_item = false
+item_count = 6
+popup/item_0/text = "Simplex"
+popup/item_1/text = "Simplex Smooth"
+popup/item_1/id = 1
+popup/item_2/text = "Cellular"
+popup/item_2/id = 2
+popup/item_3/text = "Perlin"
+popup/item_3/id = 3
+popup/item_4/text = "Value Cubic"
+popup/item_4/id = 4
+popup/item_5/text = "Value"
+popup/item_5/id = 5
+
+[node name="Seed Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container"]
+layout_mode = 2
+tooltip_text = "The random number seed for all noise types."
+
+[node name="Seed Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Seed Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Seed" type="Label" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Seed Setting/Seed Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Seed"
+uppercase = true
+
+[node name="Seed Value" type="LineEdit" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Seed Setting"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Frequency Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container"]
+layout_mode = 2
+tooltip_text = "Controls the level of detail in the noise. Low values make it smoother; high values make it rougher."
+
+[node name="Frequency Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Frequency Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Frequency" type="Label" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Frequency Setting/Frequency Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Frequency"
+uppercase = true
+
+[node name="Frequency LineEdit" type="LineEdit" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Frequency Setting"]
+layout_mode = 2
+text = "0.0001"
+
+[node name="Frequency Value" type="HSlider" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Frequency Setting"]
+custom_minimum_size = Vector2(170, 31)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 10000.0
+step = 0.0
+value = 1.0
+exp_edit = true
+
+[node name="Scale Factor Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container"]
+layout_mode = 2
+tooltip_text = "Adjusts how closely the planet matches the noise pattern. A value of 100 perfectly matches the noise; lower values make it look less like the noise."
+
+[node name="Scale Factor Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Scale Factor Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Scale Factor Label" type="Label" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Scale Factor Setting/Scale Factor Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Scale Factor"
+uppercase = true
+
+[node name="Scale Factor Value" type="SpinBox" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Scale Factor Setting"]
+custom_minimum_size = Vector2(170, 31)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 1.0
+step = 0.1
+value = 1.0
+
+[node name="Fractal Settings Label" type="Label" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_0khto")
+text = "Fractal Settings"
+horizontal_alignment = 1
+uppercase = true
+
+[node name="Fractal Type Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container"]
+layout_mode = 2
+tooltip_text = "Defines how multiple noise layers (octaves) are combined to create a fractal pattern.
+
+None: No fractal effect, single-layer noise.
+
+FBM: Uses Fractional Brownian Motion for smooth, layered fractal patterns.
+
+Ridged: Combines layers to create a sharp, \"ridged\" appearance."
+
+[node name="Fractal Type Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Fractal Type Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Fractal Type Label" type="Label" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Fractal Type Setting/Fractal Type Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Fractal Type"
+uppercase = true
+
+[node name="Fractal Types" type="OptionButton" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Fractal Type Setting"]
+custom_minimum_size = Vector2(170, 31)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+selected = 1
+fit_to_longest_item = false
+item_count = 3
+popup/item_0/text = "None"
+popup/item_1/text = "FBM"
+popup/item_1/id = 1
+popup/item_2/text = "RIDGED"
+popup/item_2/id = 2
+
+[node name="Octaves Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container"]
+layout_mode = 2
+tooltip_text = "The number of noise layers combined to create the final fractal pattern. More layers add detail."
+
+[node name="Octaves Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Octaves Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Octaves Label" type="Label" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Octaves Setting/Octaves Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Octaves"
+uppercase = true
+
+[node name="Octaves Value" type="SpinBox" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Octaves Setting"]
+custom_minimum_size = Vector2(170, 31)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 1.0
+max_value = 10.0
+value = 5.0
+
+[node name="Lacunarity Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container"]
+layout_mode = 2
+tooltip_text = "Controls how much detail is added with each layer of noise. Higher values create finer, rougher textures."
+
+[node name="Lacunarity Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Lacunarity Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Lacunarity Label" type="Label" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Lacunarity Setting/Lacunarity Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Lacunarity"
+uppercase = true
+
+[node name="Lacunarity Value" type="SpinBox" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Lacunarity Setting"]
+custom_minimum_size = Vector2(170, 31)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = -100.0
+step = 0.1
+value = 2.0
+
+[node name="Gain Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container"]
+layout_mode = 2
+tooltip_text = "Sets the influence of each noise layer. Lower values emphasize smoother base layers, while higher values highlight finer, detailed layers."
+
+[node name="Gain Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Gain Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Gain Label" type="Label" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Gain Setting/Gain Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Gain"
+uppercase = true
+
+[node name="Gain Value" type="SpinBox" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Gain Setting"]
+custom_minimum_size = Vector2(170, 31)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = -5.0
+max_value = 5.0
+step = 0.1
+value = 0.5
+
+[node name="Weighted Strength Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container"]
+layout_mode = 2
+tooltip_text = "Reduces the influence of higher layers when lower layers have a strong effect."
+
+[node name="Weighted Strength Container" type="VBoxContainer" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Weighted Strength Setting"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Weighted Strength Label" type="Label" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Weighted Strength Setting/Weighted Strength Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Weighted Strength
+"
+uppercase = true
+
+[node name="Weighted Strength LineEdit" type="LineEdit" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Weighted Strength Setting"]
+layout_mode = 2
+text = "0"
+
+[node name="Weighted Strength Value" type="HSlider" parent="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Weighted Strength Setting"]
+custom_minimum_size = Vector2(170, 31)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+
 [node name="Radius Setting" type="HBoxContainer" parent="RootControl/MarginContainer/Settings"]
 layout_mode = 2
 tooltip_text = "Sets the size of the planet. Larger values create bigger planets."
@@ -381,6 +651,20 @@ text = "Generate"
 [connection signal="focus_exited" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Weighted Strength Setting/Weighted Strength LineEdit" to="." method="_on_weighted_strength_line_edit_focus_exited"]
 [connection signal="text_submitted" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Weighted Strength Setting/Weighted Strength LineEdit" to="." method="_on_weighted_strength_line_edit_text_submitted"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Noise Settings Dropdown/Noise Settings Container/Weighted Strength Setting/Weighted Strength Value" to="." method="_on_weighted_strength_value_changed"]
+[connection signal="pressed" from="RootControl/MarginContainer/Settings/Biome Settings Button/Biome Settings" to="." method="_on_biome_settings_pressed"]
+[connection signal="item_selected" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Noise Type Setting/Noise Types" to="." method="_on_noise_types_item_selected"]
+[connection signal="text_changed" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Seed Setting/Seed Value" to="." method="_on_seed_value_text_changed"]
+[connection signal="focus_exited" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Frequency Setting/Frequency LineEdit" to="." method="_on_frequency_line_edit_focus_exited"]
+[connection signal="text_submitted" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Frequency Setting/Frequency LineEdit" to="." method="_on_frequency_line_edit_text_changed"]
+[connection signal="value_changed" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Frequency Setting/Frequency Value" to="." method="_on_frequency_value_changed"]
+[connection signal="value_changed" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Scale Factor Setting/Scale Factor Value" to="." method="_on_scale_factor_value_changed"]
+[connection signal="item_selected" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Fractal Type Setting/Fractal Types" to="." method="_on_fractal_types_item_selected"]
+[connection signal="value_changed" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Octaves Setting/Octaves Value" to="." method="_on_octaves_value_changed"]
+[connection signal="value_changed" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Lacunarity Setting/Lacunarity Value" to="." method="_on_lacunarity_value_changed"]
+[connection signal="value_changed" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Gain Setting/Gain Value" to="." method="_on_gain_value_changed"]
+[connection signal="focus_exited" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Weighted Strength Setting/Weighted Strength LineEdit" to="." method="_on_weighted_strength_line_edit_focus_exited"]
+[connection signal="text_submitted" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Weighted Strength Setting/Weighted Strength LineEdit" to="." method="_on_weighted_strength_line_edit_text_submitted"]
+[connection signal="value_changed" from="RootControl/MarginContainer/Settings/Biome Settings Dropdown/Biome Settings Container/Weighted Strength Setting/Weighted Strength Value" to="." method="_on_weighted_strength_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Radius Setting/Radius Value" to="." method="_on_radius_value_changed"]
 [connection signal="value_changed" from="RootControl/MarginContainer/Settings/Subdivisions Setting/Subdivisions Value" to="." method="_on_subdivisions_value_changed"]
 [connection signal="pressed" from="RootControl/MarginContainer/Settings/GenerateBtnVBox/Generate Button" to="." method="_generate_planet"]
